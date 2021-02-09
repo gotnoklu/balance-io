@@ -49,7 +49,7 @@ app.once('ready', async () => {
 		height: 700,
 		minWidth: 700,
 		title: 'Iris',
-		icon: '../build/icon.png',
+		icon: '../build/favicon.ico',
 		webPreferences: {
 			nodeIntegration: false,
 			devTools: true,
