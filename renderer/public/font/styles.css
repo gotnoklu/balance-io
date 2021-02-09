@@ -1,0 +1,9 @@
+@font-face {
+	src: url('./barlow/Barlow-Regular.ttf');
+	font-family: 'Barlow';
+}
+
+@font-face {
+	src: url('./robotomono/RobotoMono-Bold.ttf');
+	font-family: 'RobotoMono-Bold';
+}

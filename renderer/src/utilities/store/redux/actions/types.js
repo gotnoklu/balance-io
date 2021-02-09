@@ -1,0 +1,15 @@
+// Default action types
+export const SET_DEFAULT_STORE = 'DEFAULT_STORE/SET'
+
+// App action types
+export const SET_APP_THEME = 'APP_STORE/SET_THEME'
+export const SET_APP_BACKUP_TYPE = 'APP_STORE/SET_BACKUP_TYPE'
+export const SET_APP_BACKUP_CREATED = 'APP_STORE/SET_BACKUP_CREATED'
+export const SET_APP_STORE = 'APP_STORE/SET'
+
+// Task action types
+export const SET_TASKS_STORE = 'TASKS_STORE/SET'
+export const DELETE_ALL_TASKS = 'TASKS_STORE/DELETE_ALL'
+export const DELETE_MULTIPLE_TASKS = 'TASKS_STORE/DELETE_MANY'
+export const DELETE_ONE_TASK = 'TASKS_STORE/DELETE'
+export const SAVE_TASK = 'TASKS_STORE/SAVE'

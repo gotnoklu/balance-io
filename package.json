@@ -1,27 +1,83 @@
 {
-  "name": "electron-next-skeleton",
-  "version": "1.0.0",
-  "main": "main/index.js",
-  "license": "MIT",
-  "repository": "leo/electron-next-skeleton",
-  "scripts": {
-    "start": "electron .",
-    "build": "next build renderer && next export renderer",
-    "dist": "npm run build && bundle"
-  },
-  "bundle": {
-    "name": "ElectronNext"
-  },
-  "devDependencies": {
-    "bundle": "^2.0.1",
-    "electron": "^1.7.10",
-    "next": "^4.2.1",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0"
-  },
-  "dependencies": {
-    "app-root-path": "^2.0.1",
-    "electron-is-dev": "^0.3.0",
-    "electron-next": "^3.1.3"
-  }
+	"name": "iris",
+	"version": "1.0.0",
+	"main": "main/index.js",
+	"author": "Enoch Klu",
+	"license": "MIT",
+	"repository": "https://github.com/Elkanah-me/iris",
+	"description": "A task manager for Windows.",
+	"scripts": {
+		"dev": "electron .",
+		"build": "next build renderer && next export renderer",
+		"dist": "yarn run build && yarn run package",
+		"package": "electron-builder build"
+	},
+	"build": {
+		"appId": "com.iris.tasks",
+		"productName": "Iris",
+		"copyright": "Copyright 2021 Enoch Klu",
+		"nsis": {
+			"oneClick": false,
+			"allowToChangeInstallationDirectory": true,
+			"installerIcon": "build/icon.ico",
+			"uninstallerIcon": "build/icon.ico"
+		},
+		"win": {
+			"icon": "build/icon.ico",
+			"publisherName": "Enoch Klu",
+			"target": [
+				{
+					"target": "nsis",
+					"arch": "x64"
+				}
+			]
+		},
+		"files": [
+			"**/*",
+			"main",
+			"!renderer",
+			"renderer/out"
+		],
+		"extraFiles": [
+			{
+				"from": "build",
+				"to": "resources",
+				"filter": [
+					"**/*"
+				]
+			}
+		],
+		"directories": {
+			"output": "dist"
+		}
+	},
+	"devDependencies": {
+		"@date-io/date-fns": "1.0.0",
+		"@material-ui/core": "^4.11.0",
+		"@material-ui/icons": "^4.9.1",
+		"@material-ui/pickers": "^3.2.10",
+		"clsx": "^1.1.1",
+		"date-fns": "^2.16.1",
+		"electron": "7.1.7",
+		"electron-builder": "^22.9.1",
+		"eslint": "^7.15.0",
+		"eslint-config-prettier": "^7.0.0",
+		"eslint-plugin-prettier": "^3.3.0",
+		"eslint-plugin-react": "^7.21.5",
+		"next": "^10.0.6",
+		"next-redux-wrapper": "^6.0.2",
+		"prettier": "^2.2.1",
+		"prop-types": "^15.7.2",
+		"react": "^16.8.0",
+		"react-dom": "^16.8.0",
+		"react-redux": "^7.2.2",
+		"redux": "^4.0.5"
+	},
+	"dependencies": {
+		"electron-is-dev": "1.1.0",
+		"electron-next": "^3.1.3",
+		"fs": "^0.0.1-security",
+		"lodash": "^4.17.20",
+		"zlib": "^1.0.5"
+	}
 }

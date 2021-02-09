@@ -1,9 +1,12 @@
 # build output
-out
-.next
+out/
+.next/
+dist/
+build/
+*.tgz
 
 # dependencies
-node_modules
+node_modules/
 
 # logs
 npm-debug.log
