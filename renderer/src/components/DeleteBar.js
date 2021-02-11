@@ -19,27 +19,22 @@ const useStyles = makeStyles(() => ({
 	},
 }))
 
-const DeleteBar = ({ selected, selectionDisabled }) => {
-	const [allSelected, setAllSelected] = React.useState(false)
-
+const DeleteBar = ({ selected, numberSelected, selectionDisabled, onSelect, onDeleteSelected }) => {
 	const classes = useStyles()
-
-	const handleToggleAllSelected = () => {
-		setAllSelected(!allSelected)
-	}
 
 	return (
 		<div className={classes.deleteBar}>
-			<IconButton color='secondary' onClick={handleToggleAllSelected} disabled={selectionDisabled}>
-				{allSelected ? <CheckBoxIcon fontSize='small' /> : <CheckBoxBlankIcon fontSize='small' />}
+			<IconButton color='secondary' onClick={onSelect} disabled={selectionDisabled}>
+				{selected ? <CheckBoxIcon fontSize='small' /> : <CheckBoxBlankIcon fontSize='small' />}
 			</IconButton>
 			<Typography variant='h6' className={classes.margin}>
-				{selectionDisabled ? 'None to select/delete.' : `${selected} selected.`}
+				{selectionDisabled ? 'None to select/delete.' : `${numberSelected} selected.`}
 			</Typography>
 			<Button
 				className={classes.margin}
 				color='secondary'
 				variant='outlined'
+				onClick={onDeleteSelected}
 				disabled={selectionDisabled}
 			>
 				Delete
@@ -49,8 +44,11 @@ const DeleteBar = ({ selected, selectionDisabled }) => {
 }
 
 DeleteBar.propTypes = {
-	selected: PropTypes.number.isRequired,
+	selected: PropTypes.bool,
+	numberSelected: PropTypes.number.isRequired,
 	selectionDisabled: PropTypes.bool,
+	onSelect: PropTypes.func,
+	onDeleteSelected: PropTypes.func,
 }
 
 export default DeleteBar

@@ -2,7 +2,7 @@ const crypto = require('crypto')
 const fs = require('fs')
 const zlib = require('zlib')
 
-const createCharacterString = (length) => {
+export const createCharacterString = (length) => {
 	const characters = [
 		'a',
 		'b',
@@ -48,23 +48,19 @@ const createCharacterString = (length) => {
 	return result.join('')
 }
 
-const createId = (length) => {
-	const pseudoRandomKey = createCharacterString(length)
+export const createId = (length) => createCharacterString(length)
+
+export const createBase64Id = (length) => {
+	const pseudoRandomKey = createId(length)
 	const hash = crypto.createHash('sha256').update(pseudoRandomKey).digest('base64')
 	return hash
 }
 
-const createBase64Id = (length) => {
-	const pseudoRandomKey = createCharacterString(length)
-	const hash = crypto.createHash('sha256').update(pseudoRandomKey).digest('base64')
-	return hash
-}
+export const createObjectClone = (...sources) => Object.assign({}, ...sources)
 
-const createObjectClone = (...sources) => Object.assign({}, ...sources)
+export const findIndexFromArray = (list, predicate) => list.findIndex(predicate)
 
-const findIndexFromArray = (list, predicate) => list.findIndex(predicate)
-
-const getValueOfKey = (object, keyPath) => {
+export const getValueOfKey = (object, keyPath) => {
 	const keys = splitObjectKeys(keyPath)
 	let counter = 0
 	let current = object
@@ -75,9 +71,9 @@ const getValueOfKey = (object, keyPath) => {
 	return current
 }
 
-const splitObjectKeys = (keyString, delimiter = '.') => keyString.split(delimiter)
+export const splitObjectKeys = (keyString, delimiter = '.') => keyString.split(delimiter)
 
-const setValueOfKey = (object, keyPath, value) => {
+export const setValueOfKey = (object, keyPath, value) => {
 	const objectClone = createObjectClone(object)
 	const keys = splitObjectKeys(keyPath)
 	let counter = 0
@@ -90,11 +86,11 @@ const setValueOfKey = (object, keyPath, value) => {
 	return objectClone
 }
 
-const createResponse = (data, success = false, error = false) => ({ success, data, error })
+export const createResponse = (data, success = false, error = false) => ({ success, data, error })
 
-const createErrorResponse = (message) => createResponse(message, false, true)
+export const createErrorResponse = (message) => createResponse(message, false, true)
 
-const createNotificationBody = (title, subtitle, message, icon, urgency, timeoutType) => ({
+export const createNotificationBody = (title, subtitle, message, icon, urgency, timeoutType) => ({
 	title,
 	subtitle,
 	body: message,
@@ -103,7 +99,7 @@ const createNotificationBody = (title, subtitle, message, icon, urgency, timeout
 	urgency,
 })
 
-const writeToFile = (path, data) => {
+export const writeToFile = (path, data) => {
 	try {
 		fs.writeFileSync(path, JSON.stringify(data))
 	} catch (error) {
@@ -111,7 +107,7 @@ const writeToFile = (path, data) => {
 	}
 }
 
-const createDirectory = (dirPath) => {
+export const createDirectory = (dirPath) => {
 	if (!fs.existsSync(dirPath)) {
 		try {
 			fs.mkdirSync(dirPath)
@@ -125,7 +121,7 @@ const createDirectory = (dirPath) => {
 	return createResponse('Directories exist.', true)
 }
 
-const parseFile = (filePath, defaults) => {
+export const parseFile = (filePath, defaults) => {
 	try {
 		return JSON.parse(fs.readFileSync(filePath))
 	} catch (error) {
@@ -133,7 +129,7 @@ const parseFile = (filePath, defaults) => {
 	}
 }
 
-const createFileBackup = (filePath, backupPath) => {
+export const createFileBackup = (filePath, backupPath) => {
 	try {
 		if (fs.existsSync(filePath)) {
 			const gzip = zlib.createGzip()
@@ -148,7 +144,7 @@ const createFileBackup = (filePath, backupPath) => {
 	}
 }
 
-const readFileBackup = (filePath, backupPath, fallbackData) => {
+export const readFileBackup = (filePath, backupPath, fallbackData) => {
 	try {
 		if (fs.existsSync(backupPath)) {
 			const unzip = zlib.createUnzip()
@@ -161,22 +157,4 @@ const readFileBackup = (filePath, backupPath, fallbackData) => {
 	} catch (error) {
 		return fallbackData
 	}
-}
-
-module.exports = {
-	createCharacterString,
-	createId,
-	createBase64Id,
-	createObjectClone,
-	findIndexFromArray,
-	getValueOfKey,
-	setValueOfKey,
-	createResponse,
-	createErrorResponse,
-	createNotificationBody,
-	writeToFile,
-	parseFile,
-	createDirectory,
-	readFileBackup,
-	createFileBackup,
 }

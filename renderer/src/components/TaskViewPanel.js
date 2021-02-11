@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 		wdith: '100%',
 		overflow: 'hidden',
 		overflowY: 'auto',
+		paddingBottom: theme.spacing(1),
 	},
 	taskViewPanelTitleBox: {
 		borderRadius: '4px 4px 0px 0px',
@@ -40,15 +41,14 @@ const useStyles = makeStyles((theme) => ({
 	},
 	taskViewPanelTitle: {
 		width: '100%',
-		transition: theme.transitions.create(['padding-left', 'width'], {
+		transition: theme.transitions.create(['width'], {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
 		}),
 	},
 	taskViewPanelTitleShift: {
 		width: '0%',
-		paddingLeft: '0%',
-		transition: theme.transitions.create(['padding-left', 'width'], {
+		transition: theme.transitions.create(['width'], {
 			easing: theme.transitions.easing.easeOut,
 			duration: theme.transitions.duration.enteringScreen,
 		}),
@@ -64,34 +64,52 @@ const TaskViewPanel = ({
 	fallbackText,
 	fallbackTextProps,
 	onAdd,
-	onSelect,
-	onComplete,
+	onDeleteSelected,
+	onCompleted,
 	onEdit,
 	onDelete,
 	allowAdd,
 }) => {
 	const [selectedTasks, setSelectedTasks] = React.useState([])
 	const [deleteBarIsOpen, setDeleteBarIsOpen] = React.useState(false)
+	const [allSelected, setAllSelected] = React.useState(false)
 
 	const classes = useStyles()
 
 	const handleSetSelected = (taskId, isSelected) => {
 		switch (isSelected) {
-			case true:
-				return setSelectedTasks(selectedTasks.concat(taskId))
 			case false:
-				return setSelectedTasks(selectedTasks.filter((id) => id !== taskId))
+				return setSelectedTasks(selectedTasks.concat(taskId))
+			case true:
+				return setSelectedTasks(selectedTasks.filter((selected) => selected !== taskId))
 			default:
 				break
 		}
 	}
 
 	const handleDeleteBarToggle = () => {
+		if (deleteBarIsOpen) {
+			setSelectedTasks([])
+			setAllSelected(false)
+		}
 		setDeleteBarIsOpen(!deleteBarIsOpen)
 	}
 
+	const toggleSelectAll = () => {
+		if (allSelected) {
+			setSelectedTasks([])
+		} else {
+			setSelectedTasks(tasks.map((task) => task.id))
+		}
+		setAllSelected(!allSelected)
+	}
+
+	const handleDeleteSelected = () => {
+		if (onDeleteSelected) onDeleteSelected(selectedTasks)
+	}
+
 	React.useEffect(() => {
-		if (onSelect) onSelect(selectedTasks)
+		if (!selectedTasks.length) setAllSelected(false)
 	}, [selectedTasks])
 
 	return (
@@ -138,11 +156,21 @@ const TaskViewPanel = ({
 							height='inherit'
 							mountOnEnter
 						>
-							<DeleteBar selected={selectedTasks.length} selectionDisabled={!tasks.length} />
+							<DeleteBar
+								selected={allSelected && selectedTasks.length === tasks.length}
+								numberSelected={selectedTasks.length}
+								selectionDisabled={!tasks.length}
+								onSelect={toggleSelectAll}
+								onDeleteSelected={handleDeleteSelected}
+							/>
 						</EffectBox>
 					</Box>
 					<IconButton onClick={handleDeleteBarToggle}>
-						{!deleteBarIsOpen ? <DeleteIcon color='error' /> : <ArrowRightIcon color='secondary' />}
+						{!deleteBarIsOpen ? (
+							<DeleteIcon color='secondary' />
+						) : (
+							<ArrowRightIcon color='secondary' />
+						)}
 					</IconButton>
 				</Box>
 			</Box>
@@ -163,11 +191,12 @@ const TaskViewPanel = ({
 									title={title}
 									description={description}
 									reminder={reminder}
-									onComplete={onComplete}
+									onCompleted={onCompleted}
 									completed={completed}
 									onEdit={onEdit}
 									onSelect={handleSetSelected}
 									selectionStarted={deleteBarIsOpen}
+									selected={allSelected}
 									onDelete={onDelete}
 								/>
 							</Grid>
@@ -198,10 +227,11 @@ TaskViewPanel.propTypes = {
 	fallbackText: PropTypes.string.isRequired,
 	fallbackTextProps: PropTypes.object,
 	onAdd: PropTypes.func,
-	onComplete: PropTypes.func.isRequired,
+	onCompleted: PropTypes.func.isRequired,
 	onSelect: PropTypes.func,
 	onEdit: PropTypes.func,
 	onDelete: PropTypes.func,
+	onDeleteSelected: PropTypes.func,
 	allowAdd: PropTypes.bool,
 }
 

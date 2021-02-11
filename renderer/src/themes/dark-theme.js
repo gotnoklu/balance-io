@@ -38,6 +38,11 @@ export default createMuiTheme({
 				boxShadow: 'none',
 			},
 		},
+		MuiMenu: {
+			paper: {
+				backgroundColor: darkColor[700],
+			},
+		},
 		MuiTextField: {
 			root: {
 				'& label.Mui-focused': {

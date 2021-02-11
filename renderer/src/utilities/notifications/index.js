@@ -1,5 +1,5 @@
-const { ipcRenderer } = global
-import { createErrorResponse, createResponse } from '../global'
+import { ipcRenderer } from 'electron'
+import { createErrorResponse } from '../global'
 import { SHOW_APP_NOTIFICATION } from '../../constants/electron-renderer'
 
 export const showAppNotification = async (title, description, message) => {
@@ -10,10 +10,7 @@ export const showAppNotification = async (title, description, message) => {
 			description,
 			message,
 		})
-		if (response.success) {
-			return await createResponse(response.data, true)
-		}
-		return errorResponse
+		return response
 	} catch (error) {
 		return errorResponse
 	}

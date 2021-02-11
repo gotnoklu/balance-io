@@ -43,7 +43,6 @@ function SplashPage() {
 			if (mainAppStoreResponse.success) {
 				const backupResponse = await backupMainAppStore()
 				if (backupResponse.success) {
-					console.log({ mainAppStoreResponse })
 					setIsStoreBackedUp(backupResponse.success)
 					dispatch(setAppStore(mainAppStoreResponse.data.app))
 					dispatch(setTasksStore(mainAppStoreResponse.data.tasks))

@@ -1,7 +1,7 @@
-const electron = require('electron')
-const path = require('path')
-const fs = require('fs')
-const {
+import electron from 'electron'
+import path from 'path'
+import fs from 'fs'
+import {
 	writeToFile,
 	parseFile,
 	createDirectory,
@@ -11,8 +11,8 @@ const {
 	createErrorResponse,
 	getValueOfKey,
 	setValueOfKey,
-} = require('../../global')
-const packageJsonFile = require('../../../package.json')
+	createBase64Id,
+} from '../../global'
 
 class AppStore {
 	constructor(options) {
@@ -20,10 +20,10 @@ class AppStore {
 		const app = electron.app || electron.remote.app
 		const documentsPath = app.getPath('documents')
 		const userDataPath = app.getPath('userData')
-		const storeDir = defaultOptions.directory || packageJsonFile.name
+		const storeDir = defaultOptions.directory || options.storeName
 		const backupDir = defaultOptions.backupDir || storeDir
 		this.storeName = defaultOptions.storeName
-		this.storeKey = defaultOptions.storeKey || '_store'
+		this.storeKey = createBase64Id(32)
 		this.dirs = {
 			backupData: path.join(documentsPath, backupDir),
 			storeData: path.join(userDataPath, storeDir),
@@ -39,19 +39,23 @@ class AppStore {
 				_backup: { _createdAt: null },
 			},
 		})
+		this.isCreated = false
 
-		this._createStoreDirectories()
-		this._initWriteData()
-		this.backup()
+		const directoriesResponse = this._createStoreDirectories()
+		const initialWriteResponse = this._initWriteData()
+		if (directoriesResponse.success && initialWriteResponse.success) {
+			this.backup()
+		}
 	}
 
 	_initWriteData() {
 		try {
-			if (!fs.existsSync(this.paths.storeData)) {
+			if (!fs.existsSync(`file://${this.paths.storeData}`)) {
 				writeToFile(this.paths.storeData, this.data)
 				return createResponse('Initial write to store file succeeded.', true)
 			}
 		} catch (error) {
+			console.log(error)
 			return createErrorResponse('Could not write initial data to app store file.')
 		}
 	}
@@ -66,8 +70,13 @@ class AppStore {
 			}
 			return createErrorResponse('Could not create app store directories.')
 		} catch (error) {
+			console.log(error)
 			return errorResponse
 		}
+	}
+
+	_getStoreKey() {
+		return this.storeKey
 	}
 
 	get(keyPath = '') {
@@ -139,4 +148,4 @@ class AppStore {
 	}
 }
 
-module.exports = AppStore
+export default AppStore

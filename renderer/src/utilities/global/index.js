@@ -46,14 +46,10 @@ export const createCharacterString = (length) => {
 	return result.join('')
 }
 
-export const createId = (length) => {
-	const pseudoRandomKey = createCharacterString(length)
-	const hash = crypto.createHash('sha256').update(pseudoRandomKey).digest('base64')
-	return hash
-}
+export const createId = (length) => createCharacterString(length)
 
 export const createBase64Id = (length) => {
-	const pseudoRandomKey = createCharacterString(length)
+	const pseudoRandomKey = createId(length)
 	const hash = crypto.createHash('sha256').update(pseudoRandomKey).digest('base64')
 	return hash
 }

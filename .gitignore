@@ -4,6 +4,7 @@ out/
 dist/
 build/
 *.tgz
+app/
 
 # dependencies
 node_modules/

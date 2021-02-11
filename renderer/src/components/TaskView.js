@@ -10,10 +10,12 @@ const useStyles = makeStyles({
 	},
 })
 
-const TaskView = ({ tasks, onAdd, onComplete, onSelect, onEdit, onDelete }) => {
+const TaskView = ({ tasks, onAdd, onCompleted, onEdit, onDelete, onDeleteSelected }) => {
 	const classes = useStyles()
-	const unfinishedTasks = Array.isArray(tasks) && tasks.filter((task) => !task.completed)
-	const completedTasks = Array.isArray(tasks) && tasks.filter((task) => task.completed)
+	console.log({ tasks })
+	const tasksIsArray = Array.isArray(tasks)
+	const unfinishedTasks = tasksIsArray && tasks.filter((task) => !task.completed)
+	const completedTasks = tasksIsArray && tasks.filter((task) => task.completed)
 
 	return (
 		<Grid container spacing={2} justify='center' className={classes.taskView}>
@@ -23,9 +25,9 @@ const TaskView = ({ tasks, onAdd, onComplete, onSelect, onEdit, onDelete }) => {
 					title='Tasks'
 					fallbackText='All done here!'
 					onAdd={onAdd}
-					onSelect={onSelect}
+					onDeleteSelected={onDeleteSelected}
 					onEdit={onEdit}
-					onComplete={onComplete}
+					onCompleted={onCompleted}
 					onDelete={onDelete}
 					allowAdd
 				/>
@@ -35,9 +37,9 @@ const TaskView = ({ tasks, onAdd, onComplete, onSelect, onEdit, onDelete }) => {
 					tasks={completedTasks}
 					title='Completed'
 					fallbackText='No completed tasks.'
-					onSelect={onSelect}
+					onDeleteSelected={onDeleteSelected}
 					onEdit={onEdit}
-					onComplete={onComplete}
+					onCompleted={onCompleted}
 					onDelete={onDelete}
 				/>
 			</Grid>
@@ -48,8 +50,8 @@ const TaskView = ({ tasks, onAdd, onComplete, onSelect, onEdit, onDelete }) => {
 TaskView.propTypes = {
 	tasks: PropTypes.array.isRequired,
 	onAdd: PropTypes.func,
-	onComplete: PropTypes.func.isRequired,
-	onSelect: PropTypes.func,
+	onCompleted: PropTypes.func.isRequired,
+	onDeleteSelected: PropTypes.func,
 	onEdit: PropTypes.func,
 	onDelete: PropTypes.func,
 }

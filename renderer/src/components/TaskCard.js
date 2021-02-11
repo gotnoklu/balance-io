@@ -70,9 +70,10 @@ const TaskCard = ({
 	completed,
 	onCompleted,
 	selectionStarted,
-	onSelected,
+	onSelect,
 	onEdit,
 	onDelete,
+	selected,
 }) => {
 	const [isSelected, setIsSelected] = React.useState(false)
 	const [expanded, setExpanded] = React.useState(false)
@@ -83,14 +84,15 @@ const TaskCard = ({
 	}
 
 	const handleToggleSelection = () => {
+		if (onSelect) {
+			onSelect(id, isSelected)
+		}
 		setIsSelected(!isSelected)
 	}
 
 	React.useEffect(() => {
-		if (onSelected) {
-			onSelected(id, isSelected)
-		}
-	}, [isSelected])
+		setIsSelected(selected)
+	}, [selected])
 
 	const handleExpand = () => {
 		setExpanded(!expanded)
@@ -179,9 +181,10 @@ TaskCard.propTypes = {
 	completed: PropTypes.bool.isRequired,
 	onCompleted: PropTypes.func,
 	selectionStarted: PropTypes.bool,
-	onSelected: PropTypes.func,
+	onSelect: PropTypes.func,
 	onEdit: PropTypes.func,
 	onDelete: PropTypes.func,
+	selected: PropTypes.bool,
 }
 
 export default TaskCard

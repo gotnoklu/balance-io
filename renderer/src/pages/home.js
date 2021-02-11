@@ -9,29 +9,30 @@ import {
 } from '../utilities/store/electron-renderer'
 import { showAppNotification } from '../utilities/notifications'
 import { useDispatch, useSelector } from 'react-redux'
-import { getTasksStore, getAppTheme, getAppBackupType } from '../utilities/store/redux/selectors'
+import { getAppTheme, getAppBackupType } from '../utilities/store/redux/selectors'
 import { setTasksStore, setAppStoreBackupType } from '../utilities/store/redux/actions'
 import { createId, findIndexFromArray } from '../utilities/global'
 import { drawerWidth, mainAppStoreKeys } from '../constants'
 import clsx from 'clsx'
 import Toolbar from '@material-ui/core/Toolbar'
 import TimeChangeListener from '../utilities/listeners/time-change-listener'
+import { useStateWithUpdate } from '../utilities/app-state'
 
 function HomePage({ setAppTheme }) {
-	const [tasks, setTasks] = React.useState([])
+	// const [tasks, setTasks] = React.useState([])
+	const [tasks, setTasks] = useStateWithUpdate([])
 	const [drawerOpen, setDrawerOpen] = React.useState(false)
-	const [selected, setSelected] = React.useState([])
 	const [taskDialogOpen, setTaskDialogOpen] = React.useState(false)
 	const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
 	const [taskDialogTitle, setTaskDialogTitle] = React.useState('Create Task')
 	const [selectedDetails, setSelectedDetails] = React.useState(null)
+	const [tasksSelected, setTasksSelected] = React.useState([])
 
 	const classes = useStyles()
 	const dispatch = useDispatch()
 
 	const appTheme = useSelector(getAppTheme)
 	const appBackupType = useSelector(getAppBackupType)
-	const allTasks = useSelector(getTasksStore)
 
 	const setAppBackupType = async (type) => {
 		dispatch(setAppStoreBackupType(type))
@@ -41,21 +42,28 @@ function HomePage({ setAppTheme }) {
 	const setAppTasksStore = (value) => dispatch(setTasksStore(value))
 
 	React.useEffect(() => {
-		const handleSetAppTasksStore = async () => {
+		const handleSetTasks = async () => {
 			const response = await getMainAppStore()
 			if (response.success) {
-				setAppTasksStore(response.data.tasks)
+				setTasks(response.data.tasks)
+				setAppBackupType(response.data.app.backupType)
 			}
 		}
-		handleSetAppTasksStore()
+		handleSetTasks()
+
+		return () => {
+			setTasks([])
+			setTaskDialogTitle('Create Task')
+		}
 	}, [])
 
 	React.useEffect(() => {
-		if (allTasks) setTasks(allTasks)
+		setAppTasksStore(tasks)
+
 		return () => {
-			setTasks([])
+			setAppTasksStore([])
 		}
-	}, [allTasks])
+	}, [tasks])
 
 	const handleToggleDrawer = () => setDrawerOpen(!drawerOpen)
 
@@ -69,16 +77,19 @@ function HomePage({ setAppTheme }) {
 
 	const handleCloseTaskDialog = () => setTaskDialogOpen(false)
 
+	const handleOpenDeleteDialog = (selected) => {
+		setTasksSelected(selected)
+		setDeleteDialogOpen(true)
+	}
+
 	const handleCloseDeleteDialog = () => setDeleteDialogOpen(false)
 
 	const handleSaveTask = async (title, description, reminder, completed) => {
-		const newTaskId = createId(20)
+		const newTaskId = createId(10)
 		const newTask = { id: newTaskId, title, description, reminder, completed }
-		const mainAppStore = await getMainAppStore()
-		const mainAppStoreTasks = await mainAppStore.data.tasks.concat(newTask)
+		const updatedTasksState = await setTasks(tasks.concat(newTask))
 
-		setTasks(tasks.concat(newTask))
-		await saveToMainAppStore(mainAppStoreKeys.TASKS, mainAppStoreTasks)
+		await saveToMainAppStore(mainAppStoreKeys.TASKS, updatedTasksState)
 
 		if (reminder && !reminder.expired) {
 			const lastNotificationListener = new TimeChangeListener()
@@ -87,13 +98,12 @@ function HomePage({ setAppTheme }) {
 				showAppNotification(title, description, `Task is due in ${reminder.notifyBefore.label}.`)
 			}
 			const handleLastNotification = async () => {
-				const copiedTasks = [...tasks]
+				const copiedTasks = await [...updatedTasksState]
 				copiedTasks[
 					findIndexFromArray(copiedTasks, ({ id }) => id === newTaskId)
 				].reminder.expired = true
-				setTasks(copiedTasks)
 				await showAppNotification(title, description, 'Task is due now.')
-				await saveToMainAppStore(mainAppStoreKeys.TASKS, mainAppStoreTasks)
+				await saveToMainAppStore(mainAppStoreKeys.TASKS, await setTasks(copiedTasks))
 			}
 
 			if (reminder.notifyBefore.value !== 0) {
@@ -110,15 +120,47 @@ function HomePage({ setAppTheme }) {
 		handleCloseTaskDialog()
 	}
 
-	const handleEditTask = (id, updatedDetails) => {}
+	const handleEditTask = async (updatedDetails) => {
+		const updatedTasks = await setTasks(
+			tasks.map((task) => {
+				if (task.id === updatedDetails.id) return { ...task, ...updatedDetails }
+			})
+		)
+		await saveToMainAppStore(mainAppStoreKeys.TASKS, updatedTasks)
+		handleCloseTaskDialog()
+	}
 
-	const handleDeleteTask = (id) => {}
+	const handleDeleteTask = async (id) => {
+		const copiedTasks = [...tasks]
+		copiedTasks.splice(
+			findIndexFromArray(tasks, (task) => task.id === id),
+			1
+		)
+		const updatedTasks = await setTasks(copiedTasks)
+		await saveToMainAppStore(mainAppStoreKeys.TASKS, updatedTasks)
+	}
 
-	const handleDeleteSelected = () => {}
+	const handleDeleteSelected = async () => {
+		const copiedTasks = [...tasks]
+		await tasksSelected.forEach((task) => {
+			copiedTasks.splice(
+				findIndexFromArray(copiedTasks, ({ id }) => task === id),
+				1
+			)
+		})
+		const updatedTasks = await setTasks(copiedTasks)
+		await saveToMainAppStore(mainAppStoreKeys.TASKS, updatedTasks)
+		handleCloseDeleteDialog()
+	}
 
-	const handleCompleteTask = (id) => {}
-
-	const handleSelectTask = (id) => {}
+	const handleCompleteTask = async (id, completed) => {
+		const updatedTasks = await setTasks(
+			tasks.map((task) => {
+				if (task.id === id) return { ...task, completed }
+			})
+		)
+		await saveToMainAppStore(mainAppStoreKeys.TASKS, updatedTasks)
+	}
 
 	return (
 		<div className={classes.root}>
@@ -131,7 +173,7 @@ function HomePage({ setAppTheme }) {
 				editDetails={selectedDetails}
 			/>
 			<DeleteDialog
-				selected={tasks.length}
+				selected={tasksSelected.length}
 				open={deleteDialogOpen}
 				onClose={handleCloseDeleteDialog}
 				onDelete={handleDeleteSelected}
@@ -154,10 +196,10 @@ function HomePage({ setAppTheme }) {
 				<TaskView
 					tasks={tasks}
 					onAdd={handleOpenTaskDialog}
-					onComplete={handleCompleteTask}
+					onCompleted={handleCompleteTask}
 					onEdit={handleOpenEditDialog}
 					onDelete={handleDeleteTask}
-					onSelect={handleSelectTask}
+					onDeleteSelected={handleOpenDeleteDialog}
 				/>
 			</main>
 		</div>

@@ -1,4 +1,4 @@
-const { ipcRenderer } = global
+import { ipcRenderer } from 'electron'
 import { createErrorResponse, createResponse } from '../../global'
 import {
 	SAVE_TO_MAIN_APP_STORE,

@@ -5,10 +5,10 @@ import Button from '@material-ui/core/Button'
 
 const DeleteDialog = ({ open, onClose, selected, onDelete }) => {
 	const dialogActions = [
-		<Button key='cancel' variant='outlined' onClick={onClose}>
+		<Button key='cancel' onClick={onClose}>
 			Cancel
 		</Button>,
-		<Button key='delete' variant='contained' color='secondary' onClick={onDelete}>
+		<Button key='delete' color='secondary' onClick={onDelete}>
 			Delete tasks
 		</Button>,
 	]
