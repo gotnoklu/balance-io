@@ -4,7 +4,7 @@ export const SET_DEFAULT_STORE = 'DEFAULT_STORE/SET'
 // App action types
 export const SET_APP_THEME = 'APP_STORE/SET_THEME'
 export const SET_APP_BACKUP_TYPE = 'APP_STORE/SET_BACKUP_TYPE'
-export const SET_APP_BACKUP_CREATED = 'APP_STORE/SET_BACKUP_CREATED'
+export const SET_APP_BACKUP_DELAY = 'APP_STORE/SET_BACKUP_DELAY'
 export const SET_APP_STORE = 'APP_STORE/SET'
 
 // Task action types
