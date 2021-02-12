@@ -22,7 +22,7 @@ export const mainAppStoreKeys = {
 	TASKS: 'tasks',
 }
 
-export const notifyTimes = {
+export const times = {
 	t0s: '0s',
 	t1h: '1h',
 	t2h: '2h',
