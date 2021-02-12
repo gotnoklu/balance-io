@@ -10,12 +10,13 @@ import {
 	ListItemSecondaryAction,
 	Radio,
 	Avatar,
-	Collapse,
 	Typography,
 	Button,
 	Box,
 	makeStyles,
 	CircularProgress,
+	MenuItem,
+	Divider,
 } from '@material-ui/core'
 import ThemeIcon from '@material-ui/icons/InvertColors'
 import BackupIcon from '@material-ui/icons/BackupOutlined'
@@ -25,11 +26,14 @@ import AutoBackupIcon from '@material-ui/icons/Restore'
 import ManualBackupIcon from '@material-ui/icons/TouchApp'
 import ExpandLessIcon from '@material-ui/icons/ExpandLess'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import { drawerWidth, themeTypes, backupTypes } from '../constants'
+import { drawerWidth, themeTypes, backupTypes, times } from '../constants'
+import TextField from './TextField'
+import EffectBox from './EffectBox'
+import { parseTimeStringFormat } from '../utilities/global'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles( theme => ( {
 	drawer: {
-		[theme.breakpoints.up('sm')]: {
+		[theme.breakpoints.up( 'sm' )]: {
 			width: drawerWidth,
 			flexShrink: 0,
 		},
@@ -41,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 		color: theme.palette.primary.contrastText,
 	},
 	nested: {
-		paddingLeft: theme.spacing(4),
+		paddingLeft: theme.spacing( 4 ),
 	},
 	avatar: {
 		backgroundColor: theme.palette.primary.dark,
@@ -49,49 +53,87 @@ const useStyles = makeStyles((theme) => ({
 		color: theme.palette.primary.light,
 	},
 	loader: {
-		marginTop: theme.spacing(0.5),
-		marginBottom: theme.spacing(0.5),
+		marginTop: theme.spacing( 0.5 ),
+		marginBottom: theme.spacing( 0.5 ),
 	},
-}))
+} ) )
 
-const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange, onBackup }) => {
-	const [themeListOpen, setThemeListOpen] = React.useState(false)
-	const [backupTypesListOpen, setBackupTypesListOpen] = React.useState(false)
-	const [backupInProgress, setBackupInProgress] = React.useState(false)
+const Drawer = ( {
+	open,
+	appTheme,
+	backupType,
+	onThemeChange,
+	onBackupTypeChange,
+	onAutoBackupTimeChange,
+	onBackup,
+} ) => {
+	const [themeListOpen, setThemeListOpen] = React.useState( false )
+	const [backupTypesListOpen, setBackupTypesListOpen] = React.useState( false )
+	const [backupInProgress, setBackupInProgress] = React.useState( false )
+	const [autoBackupTime, setAutoBackupTime] = React.useState( times.t30m )
 
 	const classes = useStyles()
 
-	const handleToggleThemeList = () => setThemeListOpen(!themeListOpen)
+	const { LIGHT, DARK } = themeTypes
+	const { AUTO, MANUAL } = backupTypes
 
-	const handleToggleBackupTypesList = () => setBackupTypesListOpen(!backupTypesListOpen)
+	const handleToggleThemeList = () => setThemeListOpen( !themeListOpen )
+
+	const handleToggleBackupTypesList = () => setBackupTypesListOpen( !backupTypesListOpen )
 
 	const handleBackup = async () => {
-		setBackupInProgress(true)
+		setBackupInProgress( true )
 		await onBackup()
 	}
 
-	const handleBackupTypeChange = async (value) => {
-		await onBackupTypeChange(value)
+	const handleBackupTypeChange = async value => {
+		await onBackupTypeChange( value, value === MANUAL ? null : autoBackupTime )
 	}
 
-	React.useEffect(() => {
+	const handleSetAutoBackupTime = e => {
+		setAutoBackupTime( e.target.value )
+	}
+
+	React.useEffect( () => {
+		const handleOnAutoBackupTimeChange = async () => {
+			switch ( backupType ) {
+				case MANUAL:
+					return await onAutoBackupTimeChange( null )
+				case AUTO: {
+					const parsedTime = parseTimeStringFormat()( autoBackupTime )
+					return await onAutoBackupTimeChange( {
+						value: parsedTime.value,
+						label: parsedTime.label,
+						short: autoBackupTime,
+					} )
+				}
+				default:
+					break
+			}
+		}
+
+		handleOnAutoBackupTimeChange()
+
+		return () => {
+			setAutoBackupTime( times.t30m )
+		}
+	}, [autoBackupTime] )
+
+	React.useEffect( () => {
 		const handleBackupStateLoad = async () => {
-			if (backupInProgress) {
-				setTimeout(() => {
-					setBackupInProgress(false)
-				}, 5000)
+			if ( backupInProgress ) {
+				setTimeout( () => {
+					setBackupInProgress( false )
+				}, 5000 )
 			}
 		}
 
 		handleBackupStateLoad()
 
 		return () => {
-			setBackupInProgress(false)
+			setBackupInProgress( false )
 		}
-	}, [backupInProgress])
-
-	const { LIGHT, DARK } = themeTypes
-	const { AUTO, MANUAL } = backupTypes
+	}, [backupInProgress] )
 
 	const drawer = (
 		<div>
@@ -120,9 +162,9 @@ const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange,
 						<ExpandMoreIcon color='secondary' />
 					)}
 				</ListItem>
-				<Collapse in={themeListOpen} timeout='auto' unmountOnExit>
+				<EffectBox effect='collapse' open={themeListOpen} unmountOnExit>
 					<List component='div' disablePadding>
-						<ListItem button className={classes.nested} onClick={() => onThemeChange(LIGHT)}>
+						<ListItem button className={classes.nested} onClick={() => onThemeChange( LIGHT )}>
 							<ListItemIcon>
 								<LightThemeIcon fontSize='small' color='secondary' />
 							</ListItemIcon>
@@ -137,12 +179,12 @@ const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange,
 								<Radio
 									value={LIGHT}
 									checked={appTheme === LIGHT}
-									onChange={(e) => onThemeChange(e.target.value)}
+									onChange={e => onThemeChange( e.target.value )}
 									inputProps={{ 'aria-label': 'light' }}
 								/>
 							</ListItemSecondaryAction>
 						</ListItem>
-						<ListItem button className={classes.nested} onClick={() => onThemeChange(DARK)}>
+						<ListItem button className={classes.nested} onClick={() => onThemeChange( DARK )}>
 							<ListItemIcon>
 								<DarkThemeIcon fontSize='small' color='secondary' />
 							</ListItemIcon>
@@ -157,13 +199,13 @@ const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange,
 								<Radio
 									value={DARK}
 									checked={appTheme === DARK}
-									onChange={(e) => onThemeChange(e.target.value)}
+									onChange={e => onThemeChange( e.target.value )}
 									inputProps={{ 'aria-label': 'dark' }}
 								/>
 							</ListItemSecondaryAction>
 						</ListItem>
 					</List>
-				</Collapse>
+				</EffectBox>
 				<ListItem button onClick={handleToggleBackupTypesList}>
 					<ListItemAvatar>
 						<Avatar className={classes.avatar}>
@@ -188,13 +230,12 @@ const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange,
 						<ExpandMoreIcon color='secondary' />
 					)}
 				</ListItem>
-				<Collapse in={backupTypesListOpen} timeout='auto' unmountOnExit>
+				<EffectBox effect='collapse' open={backupTypesListOpen} unmountOnExit>
 					<List component='div' disablePadding>
 						<ListItem
 							button
 							className={classes.nested}
-							onClick={() => handleBackupTypeChange(AUTO)}
-						>
+							onClick={() => handleBackupTypeChange( AUTO )}>
 							<ListItemIcon>
 								<AutoBackupIcon fontSize='small' color='secondary' />
 							</ListItemIcon>
@@ -209,16 +250,33 @@ const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange,
 								<Radio
 									value={AUTO}
 									checked={backupType === AUTO}
-									onChange={(e) => handleBackupTypeChange(e.target.value)}
+									onChange={e => handleBackupTypeChange( e.target.value )}
 									inputProps={{ 'aria-label': 'automatic backup' }}
 								/>
 							</ListItemSecondaryAction>
 						</ListItem>
+						<EffectBox open={backupType === AUTO} className={classes.nested} unmountOnExit>
+							<React.Fragment>
+								<Box paddingTop={1} paddingBottom={1} paddingRight={3}>
+									<TextField
+										select
+										value={autoBackupTime}
+										onChange={handleSetAutoBackupTime}
+										variant='outlined'
+										label='Backup Delay'>
+										<MenuItem value={times.t30m}>Every 30 minutes</MenuItem>
+										<MenuItem value={times.t1h}>Every hour</MenuItem>
+										<MenuItem value={times.t2h}>Every 2 hours</MenuItem>
+										<MenuItem value={times.t3h}>Every 3 hours</MenuItem>
+									</TextField>
+								</Box>
+								<Divider />
+							</React.Fragment>
+						</EffectBox>
 						<ListItem
 							button
 							className={classes.nested}
-							onClick={() => handleBackupTypeChange(MANUAL)}
-						>
+							onClick={() => handleBackupTypeChange( MANUAL )}>
 							<ListItemIcon>
 								<ManualBackupIcon fontSize='small' color='secondary' />
 							</ListItemIcon>
@@ -233,7 +291,7 @@ const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange,
 								<Radio
 									value={MANUAL}
 									checked={backupType === MANUAL}
-									onChange={(e) => handleBackupTypeChange(e.target.value)}
+									onChange={e => handleBackupTypeChange( e.target.value )}
 									inputProps={{ 'aria-label': 'manual backup' }}
 								/>
 							</ListItemSecondaryAction>
@@ -244,8 +302,7 @@ const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange,
 						padding={2}
 						display='flex'
 						flexDirection='column'
-						justifyContent='center'
-					>
+						justifyContent='center'>
 						<Button variant='outlined' color='secondary' onClick={handleBackup}>
 							{!backupInProgress ? (
 								<Typography variant='body1'>Backup Tasks</Typography>
@@ -259,7 +316,7 @@ const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange,
 							)}
 						</Button>
 					</Box>
-				</Collapse>
+				</EffectBox>
 			</List>
 		</div>
 	)
@@ -272,8 +329,7 @@ const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange,
 				}}
 				anchor='left'
 				variant='persistent'
-				open={open}
-			>
+				open={open}>
 				{drawer}
 			</MuiDrawer>
 		</nav>
@@ -282,11 +338,12 @@ const Drawer = ({ open, appTheme, backupType, onThemeChange, onBackupTypeChange,
 
 Drawer.propTypes = {
 	open: PropTypes.bool,
-	appTheme: PropTypes.oneOf(['LIGHT', 'DARK']),
-	backupType: PropTypes.oneOf(['AUTO', 'MANUAL']),
+	appTheme: PropTypes.oneOf( ['LIGHT', 'DARK'] ),
+	backupType: PropTypes.oneOf( ['AUTO', 'MANUAL'] ),
 	onThemeChange: PropTypes.func,
 	onBackupTypeChange: PropTypes.func,
 	onBackup: PropTypes.func,
+	onAutoBackupTimeChange: PropTypes.func,
 }
 
 export default Drawer
