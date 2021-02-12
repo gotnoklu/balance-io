@@ -55,6 +55,13 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 	}, [open] )
 
 	const handleSaveDetails = () => {
+		const getDate = () => selectedDate.toLocaleString().split( ',' )[0]
+		const getTime = () => {
+			const time = selectedTime.toLocaleString().split( ', ' )[1]
+			const splitTime = time.split( /[:\s]/g )
+			return `${splitTime[0]}:${splitTime[1]} ${splitTime[3]}`
+		}
+
 		if ( editDetails ) {
 			switch ( taskTypeValue ) {
 				case taskTypes.REGULAR:
@@ -88,13 +95,6 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 				default:
 					break
 			}
-		}
-
-		const getDate = () => selectedDate.toLocaleString().split( ',' )[0]
-		const getTime = () => {
-			const time = selectedTime.toLocaleString().split( ', ' )[1]
-			const splitTime = time.split( /[:\s]/g )
-			return `${splitTime[0]}:${splitTime[1]} ${splitTime[3]}`
 		}
 
 		switch ( taskTypeValue ) {
