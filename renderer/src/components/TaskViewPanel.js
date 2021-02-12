@@ -16,7 +16,7 @@ import DeleteBar from './DeleteBar'
 import FallbackText from './FallbackText'
 import clsx from 'clsx'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles( theme => ( {
 	taskViewPanel: {
 		position: 'relative',
 		height: '100%',
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 		wdith: '100%',
 		overflow: 'hidden',
 		overflowY: 'auto',
-		paddingBottom: theme.spacing(1),
+		paddingBottom: theme.spacing( 1 ),
 	},
 	taskViewPanelTitleBox: {
 		borderRadius: '4px 4px 0px 0px',
@@ -41,24 +41,24 @@ const useStyles = makeStyles((theme) => ({
 	},
 	taskViewPanelTitle: {
 		width: '100%',
-		transition: theme.transitions.create(['width'], {
+		transition: theme.transitions.create( ['width'], {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
-		}),
+		} ),
 	},
 	taskViewPanelTitleShift: {
 		width: '0%',
-		transition: theme.transitions.create(['width'], {
+		transition: theme.transitions.create( ['width'], {
 			easing: theme.transitions.easing.easeOut,
 			duration: theme.transitions.duration.enteringScreen,
-		}),
+		} ),
 	},
 	taskViewPanelTitleText: {
-		marginLeft: theme.spacing(1),
+		marginLeft: theme.spacing( 1 ),
 	},
-}))
+} ) )
 
-const TaskViewPanel = ({
+const TaskViewPanel = ( {
 	title,
 	tasks,
 	fallbackText,
@@ -69,48 +69,48 @@ const TaskViewPanel = ({
 	onEdit,
 	onDelete,
 	allowAdd,
-}) => {
-	const [selectedTasks, setSelectedTasks] = React.useState([])
-	const [deleteBarIsOpen, setDeleteBarIsOpen] = React.useState(false)
-	const [allSelected, setAllSelected] = React.useState(false)
+} ) => {
+	const [selectedTasks, setSelectedTasks] = React.useState( [] )
+	const [deleteBarIsOpen, setDeleteBarIsOpen] = React.useState( false )
+	const [allSelected, setAllSelected] = React.useState( false )
 
 	const classes = useStyles()
 
-	const handleSetSelected = (taskId, isSelected) => {
-		switch (isSelected) {
+	const handleSetSelected = ( taskId, isSelected ) => {
+		switch ( isSelected ) {
 			case false:
-				return setSelectedTasks(selectedTasks.concat(taskId))
+				return setSelectedTasks( selectedTasks.concat( taskId ) )
 			case true:
-				return setSelectedTasks(selectedTasks.filter((selected) => selected !== taskId))
+				return setSelectedTasks( selectedTasks.filter( selected => selected !== taskId ) )
 			default:
 				break
 		}
 	}
 
 	const handleDeleteBarToggle = () => {
-		if (deleteBarIsOpen) {
-			setSelectedTasks([])
-			setAllSelected(false)
+		if ( deleteBarIsOpen ) {
+			setSelectedTasks( [] )
+			setAllSelected( false )
 		}
-		setDeleteBarIsOpen(!deleteBarIsOpen)
+		setDeleteBarIsOpen( !deleteBarIsOpen )
 	}
 
 	const toggleSelectAll = () => {
-		if (allSelected) {
-			setSelectedTasks([])
+		if ( allSelected ) {
+			setSelectedTasks( [] )
 		} else {
-			setSelectedTasks(tasks.map((task) => task.id))
+			setSelectedTasks( tasks.map( task => task.id ) )
 		}
-		setAllSelected(!allSelected)
+		setAllSelected( !allSelected )
 	}
 
 	const handleDeleteSelected = () => {
-		if (onDeleteSelected) onDeleteSelected(selectedTasks)
+		if ( onDeleteSelected ) onDeleteSelected( selectedTasks )
 	}
 
-	React.useEffect(() => {
-		if (!selectedTasks.length) setAllSelected(false)
-	}, [selectedTasks])
+	React.useEffect( () => {
+		if ( !selectedTasks.length ) setAllSelected( false )
+	}, [selectedTasks] )
 
 	return (
 		<Paper className={classes.taskViewPanel}>
@@ -120,8 +120,7 @@ const TaskViewPanel = ({
 				position='absolute'
 				top={0}
 				left={0}
-				className={classes.taskViewPanelTitleBox}
-			>
+				className={classes.taskViewPanelTitleBox}>
 				<Box padding={1} display='flex' width='100%' zIndex={4}>
 					<Box
 						overflow='hidden'
@@ -129,17 +128,15 @@ const TaskViewPanel = ({
 						display='flex'
 						flexGrow={1}
 						alignItems='center'
-						justifySelf='flex-start'
-					>
+						justifySelf='flex-start'>
 						<Box
-							className={clsx(classes.taskViewPanelTitle, {
+							className={clsx( classes.taskViewPanelTitle, {
 								[classes.taskViewPanelTitleShift]: deleteBarIsOpen,
-							})}
+							} )}
 							height='inherit'
 							display='flex'
 							alignItems='center'
-							overflow='hidden'
-						>
+							overflow='hidden'>
 							{allowAdd && (
 								<IconButton color='secondary' onClick={onAdd}>
 									<AddIcon />
@@ -154,8 +151,7 @@ const TaskViewPanel = ({
 							effect='slide'
 							direction='left'
 							height='inherit'
-							mountOnEnter
-						>
+							mountOnEnter>
 							<DeleteBar
 								selected={allSelected && selectedTasks.length === tasks.length}
 								numberSelected={selectedTasks.length}
@@ -180,11 +176,10 @@ const TaskViewPanel = ({
 					paddingLeft={1}
 					paddingRight={1}
 					paddingBottom={1}
-					className={classes.taskViewPanelContent}
-				>
+					className={classes.taskViewPanelContent}>
 					<Toolbar />
 					<Grid container spacing={2}>
-						{tasks.map(({ id, title, description, reminder, completed }) => (
+						{tasks.map( ( { id, title, description, reminder, completed } ) => (
 							<Grid key={id} item xs={12} md={6}>
 								<TaskCard
 									id={id}
@@ -200,7 +195,7 @@ const TaskViewPanel = ({
 									onDelete={onDelete}
 								/>
 							</Grid>
-						))}
+						) )}
 					</Grid>
 				</Box>
 			) : (
@@ -212,8 +207,7 @@ const TaskViewPanel = ({
 					alignItems='center'
 					justifyContent='center'
 					width='100%'
-					height='100%'
-				>
+					height='100%'>
 					<FallbackText text={fallbackText} height='100%' {...fallbackTextProps} />
 				</Box>
 			)}

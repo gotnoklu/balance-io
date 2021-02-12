@@ -4,17 +4,17 @@ import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import TaskViewPanel from './TaskViewPanel'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles( {
 	taskView: {
 		height: '100%',
 	},
-})
+} )
 
-const TaskView = ({ tasks, onAdd, onCompleted, onEdit, onDelete, onDeleteSelected }) => {
+const TaskView = ( { tasks, onAdd, onCompleted, onEdit, onDelete, onDeleteSelected } ) => {
 	const classes = useStyles()
-	const tasksIsArray = Array.isArray(tasks)
-	const unfinishedTasks = tasksIsArray && tasks.filter((task) => !task.completed)
-	const completedTasks = tasksIsArray && tasks.filter((task) => task.completed)
+	const tasksIsArray = Array.isArray( tasks )
+	const unfinishedTasks = tasksIsArray && tasks.filter( task => !task.completed )
+	const completedTasks = tasksIsArray && tasks.filter( task => task.completed )
 
 	return (
 		<Grid container spacing={2} justify='center' className={classes.taskView}>
