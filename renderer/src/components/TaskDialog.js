@@ -173,7 +173,7 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 				onChange={handleSetTaskType}
 				variant='outlined'
 				label='Task Type'
-				margn='dense'>
+				margin='dense'>
 				<MenuItem value={taskTypes.REGULAR}>Regular</MenuItem>
 				<MenuItem value={taskTypes.REMINDER}>Reminder</MenuItem>
 			</TextField>
