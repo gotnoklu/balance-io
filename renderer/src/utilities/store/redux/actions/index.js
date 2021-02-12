@@ -1,4 +1,9 @@
-import { setAppStoreTheme, setAppStoreBackupType, setAppStore } from './app-actions'
+import {
+	setAppStoreTheme,
+	setAppStoreBackupType,
+	setAppStore,
+	setAppStoreBackupDelay,
+} from './app-actions'
 import {
 	setTasksStore,
 	deleteAllTasks,
@@ -16,4 +21,5 @@ export {
 	deleteTask,
 	saveTask,
 	setAppStore,
+	setAppStoreBackupDelay,
 }
