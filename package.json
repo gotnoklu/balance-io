@@ -13,7 +13,7 @@
 		"postinstall": "electron-builder install-app-deps"
 	},
 	"build": {
-		"appId": "app.iris",
+		"appId": "Iris",
 		"productName": "Iris",
 		"copyright": "Copyright 2021 Enoch Klu",
 		"nsis": {
@@ -24,7 +24,7 @@
 		},
 		"win": {
 			"icon": "resources/icons/icon.ico",
-			"appId": "app.iris",
+			"appId": "Iris",
 			"publisherName": "Enoch Klu",
 			"target": [
 				{
