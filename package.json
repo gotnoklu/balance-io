@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"author": "Enoch Klu",
 	"main": "app/background.js",
-	"license": "None",
+	"license": "",
 	"repository": "https://github.com/Elkanah-me/iris",
 	"description": "A task manager for Windows.",
 	"scripts": {
