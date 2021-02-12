@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"author": "Enoch Klu",
 	"main": "app/background.js",
-	"license": "MIT",
+	"license": "None",
 	"repository": "https://github.com/Elkanah-me/iris",
 	"description": "A task manager for Windows.",
 	"scripts": {
@@ -13,18 +13,18 @@
 		"postinstall": "electron-builder install-app-deps"
 	},
 	"build": {
-		"appId": "app.iris.goals",
+		"appId": "app.iris",
 		"productName": "Iris",
 		"copyright": "Copyright 2021 Enoch Klu",
 		"nsis": {
 			"oneClick": false,
 			"allowToChangeInstallationDirectory": true,
-			"installerIcon": "build/icon.ico",
-			"uninstallerIcon": "build/icon.ico"
+			"installerIcon": "resources/icons/icon.ico",
+			"uninstallerIcon": "resources/icons/icon.ico"
 		},
 		"win": {
-			"icon": "build/icon.ico",
-			"appId": "app.iris.goals",
+			"icon": "resources/icons/icon.ico",
+			"appId": "app.iris",
 			"publisherName": "Enoch Klu",
 			"target": [
 				{
@@ -45,7 +45,7 @@
 		},
 		"extraResources": [
 			{
-				"from": "build",
+				"from": "resources/icons",
 				"to": "./",
 				"filter": [
 					"**/*"
