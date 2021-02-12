@@ -1,7 +1,9 @@
-const getAppStore = (store) => store.app
+const getAppStore = store => store.app
 
-const getAppTheme = (store) => getAppStore(store).theme
+const getAppTheme = store => getAppStore( store ).theme
 
-const getAppBackupType = (store) => getAppStore(store).backupType
+const getAppBackupType = store => getAppStore( store ).backupType
 
-export { getAppStore, getAppTheme, getAppBackupType }
+const getAppBackupDelay = store => getAppStore( store ).autoBackupDelay
+
+export { getAppStore, getAppTheme, getAppBackupType, getAppBackupDelay }
