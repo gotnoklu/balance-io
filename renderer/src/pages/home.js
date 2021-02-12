@@ -27,6 +27,7 @@ import TimeChangeListener from '../utilities/listeners/time-change-listener'
 import { useStateWithUpdate } from '../utilities/app-state'
 
 function HomePage( { setAppTheme } ) {
+	// Component state
 	const [tasks, setTasks] = useStateWithUpdate( [] )
 	const [drawerOpen, setDrawerOpen] = React.useState( false )
 	const [taskDialogOpen, setTaskDialogOpen] = React.useState( false )
@@ -34,6 +35,7 @@ function HomePage( { setAppTheme } ) {
 	const [taskDialogTitle, setTaskDialogTitle] = React.useState( 'Create Task' )
 	const [selectedDetails, setSelectedDetails] = React.useState( null )
 	const [tasksSelected, setTasksSelected] = React.useState( [] )
+	const [isListenersSet, setIsListenersSet] = React.useState( false )
 
 	const classes = useStyles()
 	const dispatch = useDispatch()
@@ -67,6 +69,46 @@ function HomePage( { setAppTheme } ) {
 
 	React.useEffect( () => {
 		setAppTasksStore( tasks )
+
+		if ( !isListenersSet ) {
+			tasks.forEach( async ( task, index ) => {
+				if ( task.reminder ) {
+					const lastListener = new TimeChangeListener()
+
+					const handleFirstNotification = async () => {
+						await showAppNotification(
+							task.title,
+							task.description,
+							`Task is due in ${task.reminder.notifyBefore.label}.`
+						)
+					}
+
+					const handleLastNotification = async () => {
+						const copiedTasks = await [...tasks]
+						copiedTasks[index].reminder.expired = true
+						await showAppNotification( task.title, task.description, 'Task is due now.' )
+						await saveToMainAppStore( mainAppStoreKeys.TASKS, await setTasks( copiedTasks ) )
+					}
+
+					if ( task.reminder.notifyBefore.value !== 0 ) {
+						const firstListener = new TimeChangeListener()
+						firstListener.createOneTimeListener(
+							task.reminder.expiresAt - task.reminder.notifyBefore.value,
+							handleFirstNotification,
+							500
+						)
+					}
+
+					await lastListener.createOneTimeListener(
+						task.reminder.expiresAt,
+						handleLastNotification,
+						500
+					)
+
+					if ( !isListenersSet ) await setIsListenersSet( true )
+				}
+			} )
+		}
 
 		return () => {
 			setAppTasksStore( [] )
@@ -132,6 +174,8 @@ function HomePage( { setAppTheme } ) {
 				handleLastNotification,
 				500
 			)
+
+			if ( !isListenersSet ) await setIsListenersSet( true )
 		}
 		handleCloseTaskDialog()
 	}
