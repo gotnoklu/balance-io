@@ -17,7 +17,7 @@ import UndoIcon from '@material-ui/icons/Undo'
 import DateIcon from '@material-ui/icons/CalendarToday'
 import TimeIcon from '@material-ui/icons/Timer'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles( theme => ( {
 	taskCard: {
 		height: '100%',
 		position: 'relative',
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	cardContent: {
 		height: '100%',
-		marginBottom: theme.spacing(5),
+		marginBottom: theme.spacing( 5 ),
 	},
 	cardActions: {
 		position: 'absolute',
@@ -39,18 +39,18 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: 'center',
 		width: '100%',
 	},
-	hideRest: ({ expanded }) => ({
-		width: '260px',
+	hideRest: ( { expanded } ) => ( {
+		// width: '260px',
 		overflow: expanded ? 'initial' : 'hidden',
 		textOverflow: 'ellipsis',
-	}),
-	chipLabel: ({ strikeThrough }) => ({
+	} ),
+	chipLabel: ( { strikeThrough } ) => ( {
 		textDecoration: strikeThrough ? 'line-through' : 'unset',
-	}),
-}))
+	} ),
+} ) )
 
-const ChipLabel = ({ text, strikeThrough }) => {
-	const classes = useStyles({ strikeThrough })
+const ChipLabel = ( { text, strikeThrough } ) => {
+	const classes = useStyles( { strikeThrough } )
 	return (
 		<Box className={classes.chipLabel}>
 			<Typography variant='body2' component='span'>
@@ -62,7 +62,7 @@ const ChipLabel = ({ text, strikeThrough }) => {
 
 ChipLabel.propTypes = { text: PropTypes.string, strikeThrough: PropTypes.bool }
 
-const TaskCard = ({
+const TaskCard = ( {
 	id,
 	title,
 	description,
@@ -74,28 +74,28 @@ const TaskCard = ({
 	onEdit,
 	onDelete,
 	selected,
-}) => {
-	const [isSelected, setIsSelected] = React.useState(false)
-	const [expanded, setExpanded] = React.useState(false)
-	const classes = useStyles({ expanded })
+} ) => {
+	const [isSelected, setIsSelected] = React.useState( false )
+	const [expanded, setExpanded] = React.useState( false )
+	const classes = useStyles( { expanded } )
 
 	const handleToggleCompleted = () => {
-		onCompleted(id, !completed)
+		onCompleted( id, !completed )
 	}
 
 	const handleToggleSelection = () => {
-		if (onSelect) {
-			onSelect(id, isSelected)
+		if ( onSelect ) {
+			onSelect( id, isSelected )
 		}
-		setIsSelected(!isSelected)
+		setIsSelected( !isSelected )
 	}
 
-	React.useEffect(() => {
-		setIsSelected(selected)
-	}, [selected])
+	React.useEffect( () => {
+		setIsSelected( selected )
+	}, [selected] )
 
 	const handleExpand = () => {
-		setExpanded(!expanded)
+		setExpanded( !expanded )
 	}
 
 	return (
@@ -142,21 +142,20 @@ const TaskCard = ({
 					</IconButton>
 				)}
 				<div className={classes.alignRight}>
-					<IconButton onClick={() => onDelete(id)}>
+					<IconButton onClick={() => onDelete( id )}>
 						<DeleteIcon fontSize='small' color='error' />
 					</IconButton>
 					{!completed && (
 						<IconButton
 							color='secondary'
 							onClick={() =>
-								onEdit({
+								onEdit( {
 									id,
 									title,
 									description,
 									reminder,
-								})
-							}
-						>
+								} )
+							}>
 							<EditIcon fontSize='small' />
 						</IconButton>
 					)}
@@ -177,7 +176,7 @@ TaskCard.propTypes = {
 	id: PropTypes.string.isRequired,
 	title: PropTypes.string.isRequired,
 	description: PropTypes.string.isRequired,
-	reminder: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+	reminder: PropTypes.oneOfType( [PropTypes.bool, PropTypes.object] ),
 	completed: PropTypes.bool.isRequired,
 	onCompleted: PropTypes.func,
 	selectionStarted: PropTypes.bool,
