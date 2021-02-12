@@ -12,7 +12,6 @@ const useStyles = makeStyles({
 
 const TaskView = ({ tasks, onAdd, onCompleted, onEdit, onDelete, onDeleteSelected }) => {
 	const classes = useStyles()
-	console.log({ tasks })
 	const tasksIsArray = Array.isArray(tasks)
 	const unfinishedTasks = tasksIsArray && tasks.filter((task) => !task.completed)
 	const completedTasks = tasksIsArray && tasks.filter((task) => task.completed)
