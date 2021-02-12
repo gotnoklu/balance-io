@@ -109,6 +109,16 @@ class AppStore {
 		}
 	}
 
+	setStore( value ) {
+		try {
+			this.data = value
+			writeToFile( this.paths.storeData, this.data )
+			return createResponse( 'Store value set successfully!', true )
+		} catch ( error ) {
+			return createErrorResponse( 'Could not set store value.' )
+		}
+	}
+
 	getAll() {
 		try {
 			return createResponse( parseFile( this.paths.storeData ) || this.data, true )
