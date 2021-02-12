@@ -7,16 +7,16 @@ import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 
-const useStyles = makeStyles(() => ({
-	effectBox: ({ width, height }) => ({
-		width: typeof width === 'number' || typeof width === 'string' ? width : 'max-content',
-		height: typeof height === 'number' || typeof height === 'string' ? height : 'max-content',
-	}),
-}))
+const useStyles = makeStyles( () => ( {
+	effectBox: ( { width, height } ) => ( {
+		width: typeof width === 'number' || typeof width === 'string' ? width : 'inherit',
+		height: typeof height === 'number' || typeof height === 'string' ? height : 'inherit',
+	} ),
+} ) )
 
-const createMountProps = (mountOnEnter, unmountOnExit) => ({ mountOnEnter, unmountOnExit })
+const createMountProps = ( mountOnEnter, unmountOnExit ) => ( { mountOnEnter, unmountOnExit } )
 
-const EffectBox = ({
+const EffectBox = ( {
 	open,
 	effect,
 	direction,
@@ -28,8 +28,8 @@ const EffectBox = ({
 	onEnter,
 	onExited,
 	children,
-}) => {
-	const classes = useStyles({ width, height })
+} ) => {
+	const classes = useStyles( { width, height } )
 
 	const childBox = (
 		<Box component='div' width='100%' height='100%'>
@@ -39,45 +39,42 @@ const EffectBox = ({
 
 	const fadeBox = (
 		<Fade
-			className={clsx(classes.effectBox, className)}
+			className={clsx( classes.effectBox, className )}
 			in={open}
 			timeout={300}
 			onEnter={onEnter}
 			onExited={onExited}
-			{...createMountProps(mountOnEnter, unmountOnExit)}
-		>
+			{...createMountProps( mountOnEnter, unmountOnExit )}>
 			{childBox}
 		</Fade>
 	)
 
 	const slideBox = (
 		<Slide
-			className={clsx(classes.effectBox, className)}
+			className={clsx( classes.effectBox, className )}
 			in={open}
 			timeout={300}
 			direction={direction}
 			onEnter={onEnter}
 			onExited={onExited}
-			{...createMountProps(mountOnEnter, unmountOnExit)}
-		>
+			{...createMountProps( mountOnEnter, unmountOnExit )}>
 			{childBox}
 		</Slide>
 	)
 
 	const collapseBox = (
 		<Collapse
-			className={clsx(classes.effectBox, className)}
+			className={clsx( classes.effectBox, className )}
 			in={open}
 			timeout={300}
 			onEnter={onEnter}
 			onExited={onExited}
-			{...createMountProps(mountOnEnter, unmountOnExit)}
-		>
+			{...createMountProps( mountOnEnter, unmountOnExit )}>
 			{childBox}
 		</Collapse>
 	)
 
-	switch (effect) {
+	switch ( effect ) {
 		case 'fade': {
 			return fadeBox
 		}
@@ -98,10 +95,10 @@ const EffectBox = ({
 
 EffectBox.propTypes = {
 	open: PropTypes.bool,
-	effect: PropTypes.oneOf(['slide', 'zoom', 'fade', 'collapse']),
-	direction: PropTypes.oneOf(['up', 'down', 'left', 'right']),
-	width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-	height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	effect: PropTypes.oneOf( ['slide', 'zoom', 'fade', 'collapse'] ),
+	direction: PropTypes.oneOf( ['up', 'down', 'left', 'right'] ),
+	width: PropTypes.oneOfType( [PropTypes.string, PropTypes.number] ),
+	height: PropTypes.oneOfType( [PropTypes.string, PropTypes.number] ),
 	mountOnEnter: PropTypes.bool,
 	unmountOnExit: PropTypes.bool,
 	onEnter: PropTypes.func,
