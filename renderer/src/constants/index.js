@@ -19,6 +19,7 @@ export const mainAppStoreKeys = {
 	APP: 'app',
 	THEME: 'app.theme',
 	BACKUP_TYPE: 'app.backupType',
+	AUTO_BACKUP_DELAY: 'app.autoBackupDelay',
 	TASKS: 'tasks',
 }
 
