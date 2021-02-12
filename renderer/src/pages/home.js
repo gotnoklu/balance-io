@@ -72,7 +72,7 @@ function HomePage( { setAppTheme } ) {
 
 		if ( !isListenersSet ) {
 			tasks.forEach( async ( task, index ) => {
-				if ( task.reminder ) {
+				if ( task.reminder && !task.reminder.expired ) {
 					const lastListener = new TimeChangeListener()
 
 					const handleFirstNotification = async () => {
