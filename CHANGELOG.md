@@ -1,6 +1,6 @@
 # Iris Change Log
 
-## v1.0.0
+## v0.1.0
 - Create backup feature.
 - Create notification feature for reminders.
 - Allow app to run in system tray.
