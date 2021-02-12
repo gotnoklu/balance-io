@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import MuiTextField from '@material-ui/core/TextField'
 
-const TextField = ({ name, variant, type, placeholder, label, ...rest }) => {
+const TextField = ( { name, variant, type, placeholder, label, ...rest } ) => {
 	return (
 		<MuiTextField
 			name={name}
