@@ -87,7 +87,9 @@ const initializeApp = async () => {
 }
 
 // Initialize app
-initializeApp()
+initializeApp().catch( error => {
+	console.log( error )
+} )
 
 // Handle all events from renderer process
 handleRendererProcessEvents( mainAppStore )
