@@ -32,7 +32,9 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 		}
 
 		const setState = () => {
-			const dateTime = new Date( editDetails.reminder.expiresAt )
+			const dateTime = editDetails.reminder.expiresAt
+				? new Date( editDetails.reminder.expiresAt )
+				: new Date()
 			setTitleValue( editDetails.title )
 			setDescriptionValue( editDetails.description )
 			setTaskTypeValue( editDetails.reminder ? taskTypes.REMINDER : taskTypes.REGULAR )
@@ -72,9 +74,10 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 						reminder: false,
 					} )
 				case taskTypes.REMINDER: {
-					const greaterTime = selectedDate >= selectedTime ? selectedDate : selectedTime
+					const expiresAt = selectedDate >= selectedTime ? selectedDate : selectedTime
 					const parsedTime = parseTimeStringFormat()( reminderFirstNotify )
-					greaterTime.setSeconds( 0 )
+					expiresAt.setTime( selectedTime )
+					expiresAt.setSeconds( 0 )
 					return onEdit( {
 						id: editDetails.id,
 						title: titleValue,
@@ -82,8 +85,8 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 						reminder: {
 							renderDate: getDate(),
 							renderTime: getTime(),
-							expiresAt: greaterTime,
-							expired: new Date() >= new Date( greaterTime ),
+							expiresAt: expiresAt,
+							expired: new Date() >= new Date( expiresAt ),
 							notifyBefore: {
 								value: parsedTime.value,
 								label: parsedTime.label,
