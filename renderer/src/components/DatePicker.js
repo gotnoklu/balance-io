@@ -5,7 +5,7 @@ import DateFnsUtils from '@date-io/date-fns'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
 import DateIcon from '@material-ui/icons/CalendarToday'
 
-function DatePicker({ value, onChange }) {
+function DatePicker( { value, onChange } ) {
 	return (
 		<MuiPickersUtilsProvider utils={DateFnsUtils}>
 			<KeyboardDatePicker

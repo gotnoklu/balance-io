@@ -5,7 +5,7 @@ import DateFnsUtils from '@date-io/date-fns'
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers'
 import ClockIcon from '@material-ui/icons/Timer'
 
-function TimePicker({ value, onChange }) {
+function TimePicker( { value, onChange } ) {
 	return (
 		<MuiPickersUtilsProvider utils={DateFnsUtils}>
 			<KeyboardTimePicker
