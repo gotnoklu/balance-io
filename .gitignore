@@ -3,8 +3,10 @@ out/
 .next/
 dist/
 build/
-*.tgz
 app/
+
+# white-list
+!main/utilities/
 
 # dependencies
 node_modules/
