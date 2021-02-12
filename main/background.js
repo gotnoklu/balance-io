@@ -83,7 +83,7 @@ const initializeApp = async () => {
 	}
 
 	// Set appUserModelId
-	app.setAppUserModelId( 'app.iris.goals' )
+	app.setAppUserModelId( 'Iris' )
 }
 
 // Initialize app
