@@ -25,11 +25,12 @@ const useStyles = makeStyles( theme => ( {
 	},
 	taskViewPanelContent: {
 		position: 'absolute',
+		left: 0,
 		top: 0,
 		bottom: 0,
 		right: 0,
-		left: 0,
-		wdith: '100%',
+		width: '100%',
+		height: '100%',
 		overflow: 'hidden',
 		overflowY: 'auto',
 		paddingBottom: theme.spacing( 1 ),
@@ -171,33 +172,37 @@ const TaskViewPanel = ( {
 				</Box>
 			</Box>
 			{tasks.length ? (
-				<Box
-					paddingTop={2}
-					paddingLeft={1}
-					paddingRight={1}
-					paddingBottom={1}
-					className={classes.taskViewPanelContent}>
-					<Toolbar />
-					<Grid container spacing={2}>
-						{tasks.map( ( { id, title, description, reminder, completed } ) => (
-							<Grid key={id} item xs={12} md={6}>
-								<TaskCard
-									id={id}
-									title={title}
-									description={description}
-									reminder={reminder}
-									onCompleted={onCompleted}
-									completed={completed}
-									onEdit={onEdit}
-									onSelect={handleSetSelected}
-									selectionStarted={deleteBarIsOpen}
-									selected={allSelected}
-									onDelete={onDelete}
-								/>
+				<React.Fragment>
+					<Box
+						paddingTop={2}
+						paddingLeft={1}
+						paddingRight={1}
+						paddingBottom={1}
+						className={classes.taskViewPanelContent}>
+						<Toolbar />
+						<div>
+							<Grid container spacing={2}>
+								{tasks.map( ( { id, title, description, reminder, completed } ) => (
+									<Grid key={id} item xs={12} md={6}>
+										<TaskCard
+											id={id}
+											title={title}
+											description={description}
+											reminder={reminder}
+											onCompleted={onCompleted}
+											completed={completed}
+											onEdit={onEdit}
+											onSelect={handleSetSelected}
+											selectionStarted={deleteBarIsOpen}
+											selected={allSelected}
+											onDelete={onDelete}
+										/>
+									</Grid>
+								) )}
 							</Grid>
-						) )}
-					</Grid>
-				</Box>
+						</div>
+					</Box>
+				</React.Fragment>
 			) : (
 				<Box
 					position='absolute'
