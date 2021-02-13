@@ -1,51 +1,54 @@
+import { findTimeDifference } from '../global'
+
 class TimeChangeListener {
 	constructor() {
-		this.id = null
+		this.oneTimeId = null
+		this.repeatingId = null
 	}
 
-	createOneTimeListener( triggerDate, callback, delay ) {
+	createOneTimeListener( triggerDate, callback ) {
 		try {
 			if ( typeof window !== 'undefined' ) {
-				const getCurrentDate = () => new Date()
 				const convertedDate = triggerDate instanceof Date ? triggerDate : new Date( triggerDate )
-
-				const checkTime = () => {
-					const currentDate = getCurrentDate()
-					if ( currentDate >= convertedDate ) {
-						if ( callback ) callback( this.id )
-						this.removeListener()
-					}
+				const currentDate = new Date()
+				const runCallback = () => {
+					if ( callback ) callback()
+					return this.removeOneTimeListener( this.oneTimeId )
 				}
-
-				this.id = window.setInterval( checkTime, delay )
+				const delay = findTimeDifference( convertedDate, currentDate )
+				if ( delay > 0 ) {
+					this.oneTimeId = window.setTimeout( runCallback, delay )
+				}
 			}
 		} catch ( error ) {
 			console.log( error )
 		}
 	}
 
-	createRepeatingListener( triggerDate, callback, delay ) {
+	createRepeatingListener( triggerDate, callback ) {
 		try {
 			if ( typeof window !== 'undefined' ) {
-				const getCurrentDate = () => new Date()
 				const convertedDate = triggerDate instanceof Date ? triggerDate : new Date( triggerDate )
-
-				const checkTime = () => {
-					const currentDate = getCurrentDate()
-					if ( currentDate >= convertedDate ) {
-						if ( callback ) callback( this.id )
-					}
+				const currentDate = new Date()
+				const runCallback = () => {
+					if ( callback ) callback()
 				}
-
-				this.id = window.setInterval( checkTime, delay )
+				const delay = findTimeDifference( convertedDate, currentDate )
+				if ( delay > 0 ) {
+					this.id = window.setInterval( runCallback, delay )
+				}
 			}
 		} catch ( error ) {
 			console.log( error )
 		}
 	}
 
-	removeListener() {
-		if ( this.id !== null ) window.clearInterval( this.id )
+	removeOneTimeListener() {
+		if ( this.oneTimeId !== null ) window.clearTimeout( this.oneTimeId )
+	}
+
+	removeRepeatingListener() {
+		if ( this.repeatingId !== null ) window.clearInterval( this.repeatingId )
 	}
 }
 
