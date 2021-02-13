@@ -36,6 +36,7 @@ function HomePage( { setAppTheme } ) {
 	const [selectedDetails, setSelectedDetails] = React.useState( null )
 	const [tasksSelected, setTasksSelected] = React.useState( [] )
 	const [isListenersSet, setIsListenersSet] = React.useState( false )
+	const [isAutoDelaySet, setIsAutoDelaySet] = React.useState( false )
 
 	const classes = useStyles()
 	const dispatch = useDispatch()
@@ -44,26 +45,47 @@ function HomePage( { setAppTheme } ) {
 	const appBackupType = useSelector( getAppBackupType )
 	const appBackupDelay = useSelector( getAppBackupDelay )
 
-	const setAppBackupType = async type => {
+	const setAppAutoBackupDelay = async value => {
+		dispatch( setAppStoreBackupDelay( value ) )
+		await saveToMainAppStore( mainAppStoreKeys.AUTO_BACKUP_DELAY, value )
+	}
+
+	const setAppBackupType = async ( type, delay ) => {
 		dispatch( setAppStoreBackupType( type ) )
+		await setAppAutoBackupDelay( delay )
 		await saveToMainAppStore( mainAppStoreKeys.BACKUP_TYPE, type )
 	}
 
 	const setAppTasksStore = value => dispatch( setTasksStore( value ) )
 
 	React.useEffect( () => {
-		const handleSetTasks = async () => {
+		const handleSetState = async () => {
 			const response = await getMainAppStore()
 			if ( response.success ) {
 				await setTasks( response.data.tasks )
-				await setAppBackupType( response.data.app.backupType )
+				await dispatch( setAppStoreBackupType( response.data.app.backupType ) )
+				await dispatch( setAppStoreBackupDelay( response.data.app.autoBackupDelay ) )
 			}
 		}
-		handleSetTasks()
+
+		handleSetState()
+
+		const handleSetAutoBackupListener = () => {
+			if ( !isAutoDelaySet && appBackupDelay !== null ) {
+				const timeListener = new TimeChangeListener()
+				timeListener.removeRepeatingListener( timeListener.id )
+				if ( appBackupDelay ) {
+					timeListener.createRepeatingListener( appBackupDelay, async () => {
+						await backupMainAppStore()
+					} )
+				}
+			}
+		}
+
+		handleSetAutoBackupListener()
 
 		return () => {
 			setTasks( [] )
-			setTaskDialogTitle( 'Create Task' )
 		}
 	}, [] )
 
@@ -92,18 +114,13 @@ function HomePage( { setAppTheme } ) {
 
 					if ( task.reminder.notifyBefore.value !== 0 ) {
 						const firstListener = new TimeChangeListener()
-						firstListener.createOneTimeListener(
+						await firstListener.createOneTimeListener(
 							task.reminder.expiresAt - task.reminder.notifyBefore.value,
-							handleFirstNotification,
-							500
+							handleFirstNotification
 						)
 					}
 
-					await lastListener.createOneTimeListener(
-						task.reminder.expiresAt,
-						handleLastNotification,
-						500
-					)
+					await lastListener.createOneTimeListener( task.reminder.expiresAt, handleLastNotification )
 
 					if ( !isListenersSet ) await setIsListenersSet( true )
 				}
@@ -138,57 +155,64 @@ function HomePage( { setAppTheme } ) {
 
 	const handleCloseDeleteDialog = () => setDeleteDialogOpen( false )
 
-	const handleSaveTask = async ( title, description, reminder, completed ) => {
-		const newTaskId = createId( 20 )
-		const newTask = { id: newTaskId, title, description, reminder, completed }
-		const updatedTasksState = await setTasks( tasks.concat( newTask ) )
+	const handleSaveTask = async ( details, index ) => {
+		const setUpdatedTasks = async id => {
+			const taskObject = { ...details, id: id }
+			if ( index !== undefined ) {
+				const copied = [...tasks]
+				copied[index] = taskObject
+				return await setTasks( copied )
+			}
+
+			return await setTasks( tasks.concat( taskObject ) )
+		}
+
+		const taskId = details.id ? details.id : await createId( 20 )
+		const updatedTasksState = await setUpdatedTasks( taskId )
 
 		await saveToMainAppStore( mainAppStoreKeys.TASKS, updatedTasksState )
 
-		if ( reminder && !reminder.expired ) {
+		if ( details.reminder && !details.reminder.expired ) {
 			const lastNotificationListener = new TimeChangeListener()
 
 			const handleFirstNotification = () => {
-				showAppNotification( title, description, `Task is due in ${reminder.notifyBefore.label}.` )
+				showAppNotification(
+					details.title,
+					details.description,
+					`Task is due in ${details.reminder.notifyBefore.label}.`
+				)
 			}
 			const handleLastNotification = async () => {
 				const copiedTasks = await [...updatedTasksState]
 				copiedTasks[
-					findIndexFromArray( copiedTasks, ( { id } ) => id === newTaskId )
+					findIndexFromArray( copiedTasks, ( { id } ) => id === taskId )
 				].reminder.expired = true
-				await showAppNotification( title, description, 'Task is due now.' )
+				await showAppNotification( details.title, details.description, 'Task is due now.' )
 				await saveToMainAppStore( mainAppStoreKeys.TASKS, await setTasks( copiedTasks ) )
 			}
 
-			if ( reminder.notifyBefore.value !== 0 ) {
+			if ( details.reminder.notifyBefore.value !== 0 ) {
 				const firstNotificationListener = new TimeChangeListener()
 				firstNotificationListener.createOneTimeListener(
-					reminder.expiresAt - reminder.notifyBefore.value,
-					handleFirstNotification,
-					500
+					details.reminder.expiresAt - details.reminder.notifyBefore.value,
+					handleFirstNotification
 				)
 			}
 
-			lastNotificationListener.createOneTimeListener(
-				reminder.expiresAt,
-				handleLastNotification,
-				500
+			await lastNotificationListener.createOneTimeListener(
+				details.reminder.expiresAt,
+				handleLastNotification
 			)
 
-			if ( !isListenersSet ) await setIsListenersSet( true )
+			if ( !isListenersSet ) setIsListenersSet( true )
 		}
-		handleCloseTaskDialog()
+
+		return handleCloseTaskDialog()
 	}
 
 	const handleEditTask = async updatedDetails => {
-		const updatedTasks = await setTasks(
-			tasks.map( task => {
-				if ( task.id === updatedDetails.id ) return { ...task, ...updatedDetails }
-				return task
-			} )
-		)
-		await saveToMainAppStore( mainAppStoreKeys.TASKS, updatedTasks )
-		handleCloseTaskDialog()
+		const updatedTaskIndex = findIndexFromArray( tasks, ( { id } ) => id === updatedDetails.id )
+		return await handleSaveTask( updatedDetails, updatedTaskIndex )
 	}
 
 	const handleDeleteTask = async id => {
@@ -226,7 +250,7 @@ function HomePage( { setAppTheme } ) {
 
 	const handleSetAutoBackupListener = async delay => {
 		const timeListener = new TimeChangeListener()
-		timeListener.removeListener( timeListener.id )
+		timeListener.removeRepeatingListener( timeListener.id )
 
 		if ( appBackupDelay && delay && delay.value !== appBackupDelay.value ) {
 			timeListener.createRepeatingListener( delay.value, async () => {
@@ -235,6 +259,7 @@ function HomePage( { setAppTheme } ) {
 		}
 		await dispatch( setAppStoreBackupDelay( delay ) )
 		await saveToMainAppStore( mainAppStoreKeys.AUTO_BACKUP_DELAY, delay )
+		await setIsAutoDelaySet( true )
 	}
 
 	return (
