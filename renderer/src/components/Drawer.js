@@ -87,37 +87,26 @@ const Drawer = ( {
 	}
 
 	const handleBackupTypeChange = async value => {
-		await onBackupTypeChange( value, value === MANUAL ? null : autoBackupTime )
-	}
-
-	const handleSetAutoBackupTime = e => {
-		setAutoBackupTime( e.target.value )
-	}
-
-	React.useEffect( () => {
-		const handleOnAutoBackupTimeChange = async () => {
-			switch ( backupType ) {
-				case MANUAL:
-					return await onAutoBackupTimeChange( null )
-				case AUTO: {
-					const parsedTime = parseTimeStringFormat()( autoBackupTime )
-					return await onAutoBackupTimeChange( {
-						value: parsedTime.value,
-						label: parsedTime.label,
-						short: autoBackupTime,
-					} )
-				}
-				default:
-					break
+		const getDelay = () => {
+			const parsedTime = parseTimeStringFormat()( autoBackupTime )
+			return {
+				value: parsedTime.value,
+				label: parsedTime.label,
+				short: autoBackupTime,
 			}
 		}
+		await onBackupTypeChange( value, value === MANUAL ? null : await getDelay() )
+	}
 
-		handleOnAutoBackupTimeChange()
-
-		return () => {
-			setAutoBackupTime( times.t30m )
-		}
-	}, [autoBackupTime] )
+	const handleSetAutoBackupTime = async e => {
+		const parsedTime = await parseTimeStringFormat()( e.target.value )
+		await setAutoBackupTime( e.target.value )
+		return await onAutoBackupTimeChange( {
+			value: parsedTime.value,
+			label: parsedTime.label,
+			short: autoBackupTime,
+		} )
+	}
 
 	React.useEffect( () => {
 		const handleBackupStateLoad = async () => {
