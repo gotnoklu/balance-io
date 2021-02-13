@@ -57,31 +57,35 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 	}, [open] )
 
 	const handleSaveDetails = () => {
-		const getDate = () => selectedDate.toLocaleString().split( ',' )[0]
-		const getTime = () => {
-			const time = selectedTime.toLocaleString().split( ', ' )[1]
-			const splitTime = time.split( /[:\s]/g )
-			return `${splitTime[0]}:${splitTime[1]} ${splitTime[3]}`
-		}
+		const createTaskTypeDetails = ( type, details ) => {
+			const getDate = () => selectedDate.toLocaleString().split( ',' )[0]
+			const getTime = () => {
+				const time = selectedTime.toLocaleString().split( ', ' )[1]
+				const splitTime = time.split( /[:\s]/g )
+				return `${splitTime[0]}:${splitTime[1]} ${splitTime[3]}`
+			}
 
-		if ( editDetails ) {
-			switch ( taskTypeValue ) {
+			const id = ( details && details.id ) || null
+			const completed = ( details && details.completed ) || false
+
+			const baseTemplate = {
+				id,
+				title: titleValue,
+				description: descriptionValue,
+				reminder: false,
+				completed,
+			}
+
+			switch ( type ) {
 				case taskTypes.REGULAR:
-					return onEdit( {
-						id: editDetails.id,
-						title: titleValue,
-						description: descriptionValue,
-						reminder: false,
-					} )
+					return { ...baseTemplate }
 				case taskTypes.REMINDER: {
 					const expiresAt = selectedDate >= selectedTime ? selectedDate : selectedTime
 					const parsedTime = parseTimeStringFormat()( reminderFirstNotify )
 					expiresAt.setTime( selectedTime )
 					expiresAt.setSeconds( 0 )
-					return onEdit( {
-						id: editDetails.id,
-						title: titleValue,
-						description: descriptionValue,
+					return {
+						...baseTemplate,
 						reminder: {
 							renderDate: getDate(),
 							renderTime: getTime(),
@@ -93,39 +97,19 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 								short: reminderFirstNotify,
 							},
 						},
-					} )
+					}
 				}
 				default:
 					break
 			}
 		}
 
-		switch ( taskTypeValue ) {
-			case taskTypes.REGULAR:
-				return onSave( titleValue, descriptionValue, false, false )
-			case taskTypes.REMINDER: {
-				const greaterTime = selectedDate >= selectedTime ? selectedDate : selectedTime
-				const parsedTime = parseTimeStringFormat()( reminderFirstNotify )
-				greaterTime.setSeconds( 0 )
-				return onSave(
-					titleValue,
-					descriptionValue,
-					{
-						renderDate: getDate(),
-						renderTime: getTime(),
-						expiresAt: greaterTime,
-						notifyBefore: {
-							value: parsedTime.value,
-							label: parsedTime.label,
-							short: reminderFirstNotify,
-						},
-					},
-					false
-				)
-			}
-			default:
-				break
+		if ( editDetails ) {
+			const editResult = createTaskTypeDetails( taskTypeValue, editDetails )
+			return onEdit( editResult )
 		}
+
+		return onSave( createTaskTypeDetails( taskTypeValue ) )
 	}
 
 	const handleSetTitleValue = e => setTitleValue( e.target.value )
