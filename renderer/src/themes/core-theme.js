@@ -1,6 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles'
 
-export default createMuiTheme({
+export default createMuiTheme( {
 	typography: {
 		fontFamily: [
 			'RobotoMono',
@@ -10,7 +10,7 @@ export default createMuiTheme({
 			'-apple-system',
 			'"Segoe UI"',
 			'sans-serif',
-		].join(','),
+		].join( ',' ),
 		h1: {
 			fontFamily: 'RobotoMono-Bold',
 			fontSize: '2.625rem',
@@ -51,5 +51,9 @@ export default createMuiTheme({
 		caption: {
 			fontFamily: 'Barlow',
 		},
+		button: {
+			fontFamily: 'RobotoMono-Bold',
+			textTransform: 'none',
+		},
 	},
-})
+} )
