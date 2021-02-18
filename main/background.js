@@ -13,15 +13,26 @@ if ( isProduction ) {
 	app.setPath( 'userData', `${app.getPath( 'userData' )} (development)` )
 }
 
-const mainAppStore = new AppStore( {
+// Initialize app storage
+const storage = new AppStore( {
 	storeName: 'MainAppStore',
 	defaults: {
 		app: {
 			theme: 'LIGHT',
-			backupType: 'MANUAL',
-			autoBackupDelay: null,
+			backup_type: 'MANUAL',
+			auto_backup_delay: null,
+			settings: {
+				options: ['APP_SETTINGS', 'BOARD_SETTINGS'],
+			},
 		},
-		tasks: [],
+		iris: {
+			boards: {
+				current_board: null,
+				boards: [],
+			},
+			panels: [],
+			tasks: [],
+		},
 	},
 } )
 
@@ -44,7 +55,7 @@ const initializeApp = async () => {
 	} )
 
 	mainWindow.on( 'close', event => {
-		if ( !app.isQuiting ) {
+		if ( !app.isQuitting ) {
 			event.preventDefault()
 			mainWindow.hide()
 			return false
@@ -63,7 +74,7 @@ const initializeApp = async () => {
 		{
 			label: 'Exit',
 			click() {
-				app.isQuiting = true
+				app.isQuitting = true
 				app.quit()
 			},
 		},
@@ -77,7 +88,7 @@ const initializeApp = async () => {
 		mainWindow.setMenu( null )
 		await mainWindow.loadURL( 'app://./index.html' )
 	} else {
-		const port = process.argv[2]
+		const port = await process.argv[2]
 		await mainWindow.loadURL( `http://localhost:${port}/` )
 		mainWindow.webContents.openDevTools()
 	}
@@ -92,9 +103,4 @@ initializeApp().catch( error => {
 } )
 
 // Handle all events from renderer process
-handleRendererProcessEvents( mainAppStore )
-
-// Quit app after all windows are closed
-// app.on('window-all-closed', () => {
-// 	app.quit()
-// })
+handleRendererProcessEvents( storage )
