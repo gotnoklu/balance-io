@@ -1,8 +1,8 @@
 class Board {
-	constructor( id = null, name = '', panels = [] ) {
-		this.id = id
+	constructor( id = null, name = '', type ) {
+		this.id = id.startsWith( 'board-' ) ? id : `board-${id}`
 		this.name = name
-		this.panels = panels
+		this.type = type
 	}
 }
 

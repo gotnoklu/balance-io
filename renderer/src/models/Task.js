@@ -1,17 +1,18 @@
 class Task {
-	constructor(
-		panel = null,
-		id = null,
-		name = '',
-		description = '',
-		completed = false,
-		reminder = false
-	) {
+	/**
+	 *
+	 * @param {String | null} panel Unique ID of panel
+	 * @param {String | null} id Unique ID of task
+	 * @param {String} name Name of task
+	 * @param {String} description Description of task
+	 * @param {Boolean} completed Completed status of task
+	 * @param {Boolean | Object} reminder Reminder status of task
+	 */
+	constructor( panel = null, id = null, name = '', description = '', reminder = false ) {
 		this.panel = panel
-		this.id = id
+		this.id = id.startsWith( 'task-' ) ? id : `task-${id}`
 		this.name = name
 		this.description = description
-		this.completed = completed
 		this.reminder = reminder
 	}
 }
