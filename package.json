@@ -1,19 +1,21 @@
 {
 	"name": "iris",
 	"version": "0.1.0",
-	"author": "Enoch Klu",
+	"author": "Enoch Klu <cyronix787@gmail.com>",
 	"main": "app/background.js",
 	"license": "UNLICENSED",
 	"repository": "https://github.com/Elkanah-me/iris",
-	"description": "A task manager for Windows.",
+	"description": "A task manager.",
 	"scripts": {
 		"dev": "nextron",
 		"prod": "next start renderer",
 		"build": "nextron build",
+    "build:linux": "nextron build -l",
+    "build:windows": "nextron build -w",
 		"postinstall": "electron-builder install-app-deps"
 	},
 	"build": {
-		"appId": "Iris",
+		"appId": "app.iris",
 		"productName": "Iris",
 		"copyright": "Copyright 2021 Enoch Klu",
 		"nsis": {
@@ -24,7 +26,7 @@
 		},
 		"win": {
 			"icon": "resources/icons/icon.ico",
-			"appId": "Iris",
+			"appId": "app.iris",
 			"publisherName": "Enoch Klu",
 			"target": [
 				{
@@ -33,6 +35,15 @@
 				}
 			]
 		},
+    "linux": {
+      "icon": "resources/icons/icon.png",
+      "appId": "app.iris",
+      "target": ["deb"]
+    },
+    "deb": {
+      "depends": ["libnotify4", "libappindicator1"],
+      "fpm": ["--deb-no-default-config-files"]
+    },
 		"files": [
 			"**/*",
 			"main",
