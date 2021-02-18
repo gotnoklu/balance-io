@@ -88,7 +88,7 @@ export const getValueOfKey = ( object, keyPath ) => {
 	const keys = splitObjectKeys( keyPath )
 	let counter = 0
 	let current = object
-	while ( counter < keys.length - 1 ) {
+	while ( counter < keys.length ) {
 		current = Object.getOwnPropertyDescriptor( current, keys[counter] ).value
 		counter += 1
 	}
