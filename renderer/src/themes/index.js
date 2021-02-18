@@ -4,58 +4,63 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import LightTheme from './light-theme'
 import DarkTheme from './dark-theme'
-import { saveToMainAppStore } from '../utilities/store/electron-renderer'
-import { setAppStoreTheme } from '../utilities/store/redux/actions'
-import { getAppTheme } from '../utilities/store/redux/selectors'
+import { saveToMainAppStore } from '../storage/electron-renderer'
+import { setAppTheme } from '../storage/redux/actions'
+import { getAppTheme } from '../storage/redux/selectors'
+import { storageKeys, themeTypes } from '../constants'
 
 const AppThemeContext = React.createContext()
 
 const AppThemeConsumer = AppThemeContext.Consumer
 
 const appThemes = {
-	LIGHT: { theme: LightTheme, value: 'LIGHT' },
-	DARK: { theme: DarkTheme, value: 'DARK' },
+	LIGHT: { theme: LightTheme, value: themeTypes.LIGHT },
+	DARK: { theme: DarkTheme, value: themeTypes.DARK },
 }
 
-const AppThemeProvider = ({ children }) => {
-	const [currentTheme, setCurrentTheme] = React.useState(appThemes.LIGHT)
+const AppThemeProvider = ( { children } ) => {
+	const [currentTheme, setCurrentTheme] = React.useState( appThemes.LIGHT )
 	const dispatch = useDispatch()
 
-	const appTheme = useSelector(getAppTheme)
+	const appTheme = useSelector( getAppTheme )
 
-	const setAppTheme = (theme) => {
-		setCurrentTheme(appThemes[theme])
+	const setTheme = theme => {
+		setCurrentTheme( appThemes[theme] )
 	}
 
-	const toggleAppTheme = (theme) => {
-		switch (theme) {
+	const toggleTheme = theme => {
+		switch ( theme ) {
 			case appThemes.LIGHT:
-				setCurrentTheme(appThemes.DARK)
+				setCurrentTheme( appThemes.DARK )
 				break
 			case appThemes.DARK:
-				setCurrentTheme(appThemes.LIGHT)
+				setCurrentTheme( appThemes.LIGHT )
 				break
 			default:
 				break
 		}
 	}
 
-	React.useEffect(() => {
-		if (appTheme) {
-			setCurrentTheme(appThemes[appTheme])
+	React.useEffect( () => {
+		if ( appTheme ) {
+			setCurrentTheme( appThemes[appTheme] )
 		}
-	}, [])
+	}, [] )
 
-	React.useEffect(() => {
-		if (currentTheme) {
-			dispatch(setAppStoreTheme(currentTheme.value))
-			saveToMainAppStore('app.theme', currentTheme.value)
+	React.useEffect( () => {
+		const handleSetTheme = async () => {
+			if ( currentTheme ) {
+				await dispatch( setAppTheme( currentTheme.value ) )
+				await saveToMainAppStore( storageKeys.THEME, currentTheme.value )
+			}
 		}
-	}, [currentTheme])
+
+		handleSetTheme()
+	}, [currentTheme] )
 
 	return (
 		<ThemeProvider theme={currentTheme.theme}>
-			<AppThemeContext.Provider value={{ setAppTheme, toggleAppTheme }}>
+			<AppThemeContext.Provider value={{ setTheme, toggleTheme }}>
 				{children}
 			</AppThemeContext.Provider>
 		</ThemeProvider>
