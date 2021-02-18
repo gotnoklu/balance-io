@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button'
 import CheckBoxBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles( () => ( {
 	deleteBar: {
 		display: 'flex',
 		width: '100%',
@@ -17,9 +17,9 @@ const useStyles = makeStyles(() => ({
 	margin: {
 		marginLeft: '16px',
 	},
-}))
+} ) )
 
-const DeleteBar = ({ selected, numberSelected, selectionDisabled, onSelect, onDeleteSelected }) => {
+const DeleteBar = ( { selected, numberSelected, selectionDisabled, onSelect, onDeleteSelected } ) => {
 	const classes = useStyles()
 
 	return (
@@ -35,8 +35,7 @@ const DeleteBar = ({ selected, numberSelected, selectionDisabled, onSelect, onDe
 				color='secondary'
 				variant='outlined'
 				onClick={onDeleteSelected}
-				disabled={selectionDisabled}
-			>
+				disabled={selectionDisabled}>
 				Delete
 			</Button>
 		</div>

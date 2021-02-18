@@ -3,25 +3,30 @@ import Typography from '@material-ui/core/Typography'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import CardActions from '@material-ui/core/CardActions'
 import Chip from '@material-ui/core/Chip'
 import Box from '@material-ui/core/Box'
-import CheckIcon from '@material-ui/icons/Check'
+import PanelsIcon from '@material-ui/icons/ViewWeekRounded'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import CheckBoxBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import UndoIcon from '@material-ui/icons/Undo'
 import DateIcon from '@material-ui/icons/CalendarToday'
 import TimeIcon from '@material-ui/icons/Timer'
+import { useSelector } from 'react-redux'
+import { getCurrentBoard, getPanelsByBoard } from '../../storage/redux/selectors'
 
 const useStyles = makeStyles( theme => ( {
 	taskCard: {
 		height: '100%',
 		position: 'relative',
-		backgroundColor: theme.palette.primary.dark,
+		backgroundColor: theme.palette.primary.main,
 	},
 	cardContent: {
 		height: '100%',
@@ -40,7 +45,6 @@ const useStyles = makeStyles( theme => ( {
 		width: '100%',
 	},
 	hideRest: ( { expanded } ) => ( {
-		// width: '260px',
 		overflow: expanded ? 'initial' : 'hidden',
 		textOverflow: 'ellipsis',
 	} ),
@@ -64,12 +68,12 @@ ChipLabel.propTypes = { text: PropTypes.string, strikeThrough: PropTypes.bool }
 
 const TaskCard = ( {
 	id,
-	title,
+	name,
 	description,
 	reminder,
-	completed,
-	onCompleted,
+	panel,
 	selectionStarted,
+	onPanelChange,
 	onSelect,
 	onEdit,
 	onDelete,
@@ -77,11 +81,26 @@ const TaskCard = ( {
 } ) => {
 	const [isSelected, setIsSelected] = React.useState( false )
 	const [expanded, setExpanded] = React.useState( false )
+	const [anchorEl, setAnchorEl] = React.useState( false )
+
 	const classes = useStyles( { expanded } )
 
-	const handleToggleCompleted = () => {
-		onCompleted( id, !completed )
+	const currentBoard = useSelector( getCurrentBoard )
+	const panels = useSelector( getPanelsByBoard( currentBoard ) )
+	const filteredPanels = panels.filter( value => value.id !== panel )
+
+	const handleOpenMenu = e => setAnchorEl( e.currentTarget )
+
+	const handleCloseMenu = () => setAnchorEl( null )
+
+	const handleMenuItemClick = e => {
+		onPanelChange( e.currentTarget.dataset.value, id )
+		handleCloseMenu()
 	}
+
+	const handleEdit = () => onEdit( { id, name, description, reminder } )
+
+	const handleDelete = () => onDelete( id )
 
 	const handleToggleSelection = () => {
 		if ( onSelect ) {
@@ -99,11 +118,11 @@ const TaskCard = ( {
 	}
 
 	return (
-		<Card className={classes.taskCard}>
+		<Card variant='outlined' className={classes.taskCard}>
 			<CardContent className={classes.cardContent} onClick={handleExpand}>
 				<div className={classes.hideRest}>
 					<Typography variant='h5' component='span' noWrap={!expanded} gutterBottom>
-						{title || 'No title'}
+						{name || 'No name'}
 					</Typography>
 				</div>
 				<div className={classes.hideRest}>
@@ -142,30 +161,35 @@ const TaskCard = ( {
 					</IconButton>
 				)}
 				<div className={classes.alignRight}>
-					<IconButton onClick={() => onDelete( id )}>
+					<IconButton onClick={handleDelete}>
 						<DeleteIcon fontSize='small' color='error' />
 					</IconButton>
-					{!completed && (
-						<IconButton
-							color='secondary'
-							onClick={() =>
-								onEdit( {
-									id,
-									title,
-									description,
-									reminder,
-								} )
-							}>
-							<EditIcon fontSize='small' />
+					<IconButton color='secondary' onClick={handleEdit}>
+						<EditIcon fontSize='small' />
+					</IconButton>
+					{( !reminder || reminder.expired ) && (
+						<IconButton color='secondary' onClick={handleOpenMenu}>
+							<PanelsIcon fontSize='small' />
 						</IconButton>
 					)}
-					<IconButton color='secondary' onClick={handleToggleCompleted}>
-						{completed ? (
-							<UndoIcon color='secondary' fontSize='small' />
-						) : (
-							<CheckIcon fontSize='small' />
-						)}
-					</IconButton>
+					<Menu
+						open={Boolean( anchorEl )}
+						anchorEl={anchorEl}
+						onBackdropClick={handleCloseMenu}
+						onClose={handleCloseMenu}>
+						{filteredPanels.map( option => (
+							<MenuItem
+								data-value={option.id}
+								className={classes.menuItem}
+								onClick={handleMenuItemClick}
+								key={option.id}>
+								<ListItemIcon>
+									<PanelsIcon color='secondary' />
+								</ListItemIcon>
+								<ListItemText primary={option.name} />
+							</MenuItem>
+						) )}
+					</Menu>
 				</div>
 			</CardActions>
 		</Card>
@@ -174,11 +198,11 @@ const TaskCard = ( {
 
 TaskCard.propTypes = {
 	id: PropTypes.string.isRequired,
-	title: PropTypes.string.isRequired,
+	name: PropTypes.string.isRequired,
 	description: PropTypes.string.isRequired,
+	panel: PropTypes.string.isRequired,
 	reminder: PropTypes.oneOfType( [PropTypes.bool, PropTypes.object] ),
-	completed: PropTypes.bool.isRequired,
-	onCompleted: PropTypes.func,
+	onPanelChange: PropTypes.func,
 	selectionStarted: PropTypes.bool,
 	onSelect: PropTypes.func,
 	onEdit: PropTypes.func,

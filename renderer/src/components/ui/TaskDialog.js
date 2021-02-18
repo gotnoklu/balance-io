@@ -10,23 +10,23 @@ import Typography from '@material-ui/core/Typography'
 import DatePicker from './DatePicker'
 import TimePicker from './TimePicker'
 import EffectBox from './EffectBox'
-import { times, taskTypes } from '../constants'
-import { parseTimeStringFormat } from '../utilities/global'
+import { durations, taskTypes } from '../../constants'
+import { parseTimeStringFormat } from '../../utilities/global'
 
 const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => {
-	const [titleValue, setTitleValue] = React.useState( '' )
-	const [descriptionValue, setDescriptionValue] = React.useState( '' )
-	const [taskTypeValue, setTaskTypeValue] = React.useState( taskTypes.REGULAR )
-	const [reminderFirstNotify, setReminderFirstNotify] = React.useState( times.t0s )
+	const [name, setName] = React.useState( '' )
+	const [description, setDescription] = React.useState( '' )
+	const [taskType, setTaskType] = React.useState( taskTypes.REGULAR )
+	const [firstNotifyTime, setFirstNotifyTime] = React.useState( durations.t0s )
 	const [selectedDate, setSelectedDate] = React.useState( new Date() )
 	const [selectedTime, setSelectedTime] = React.useState( new Date() )
 
 	React.useEffect( () => {
 		const resetState = () => {
-			setTitleValue( '' )
-			setDescriptionValue( '' )
-			setTaskTypeValue( taskTypes.REGULAR )
-			setReminderFirstNotify( times.t0s )
+			setName( '' )
+			setDescription( '' )
+			setTaskType( taskTypes.REGULAR )
+			setFirstNotifyTime( durations.t0s )
 			setSelectedDate( new Date() )
 			setSelectedTime( new Date() )
 		}
@@ -35,11 +35,11 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 			const dateTime = editDetails.reminder.expiresAt
 				? new Date( editDetails.reminder.expiresAt )
 				: new Date()
-			setTitleValue( editDetails.title )
-			setDescriptionValue( editDetails.description )
-			setTaskTypeValue( editDetails.reminder ? taskTypes.REMINDER : taskTypes.REGULAR )
-			setReminderFirstNotify(
-				times[`t${editDetails.reminder ? editDetails.reminder.notifyBefore.short : '0s'}`]
+			setName( editDetails.name )
+			setDescription( editDetails.description )
+			setTaskType( editDetails.reminder ? taskTypes.REMINDER : taskTypes.REGULAR )
+			setFirstNotifyTime(
+				durations[`t${editDetails.reminder ? editDetails.reminder.notifyBefore.short : '0s'}`]
 			)
 			setSelectedDate( dateTime )
 			setSelectedTime( dateTime )
@@ -67,37 +67,28 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 
 			const id = ( details && details.id ) || null
 			const completed = ( details && details.completed ) || false
-
-			const baseTemplate = {
-				id,
-				title: titleValue,
-				description: descriptionValue,
-				reminder: false,
-				completed,
-			}
+			const baseTemplate = { id, name, description, completed, reminder: false }
 
 			switch ( type ) {
 				case taskTypes.REGULAR:
-					return { ...baseTemplate }
+					return baseTemplate
 				case taskTypes.REMINDER: {
 					const expiresAt = selectedDate >= selectedTime ? selectedDate : selectedTime
-					const parsedTime = parseTimeStringFormat()( reminderFirstNotify )
+					const parsedTime = parseTimeStringFormat()( firstNotifyTime )
 					expiresAt.setTime( selectedTime )
 					expiresAt.setSeconds( 0 )
-					return {
-						...baseTemplate,
-						reminder: {
-							renderDate: getDate(),
-							renderTime: getTime(),
-							expiresAt: expiresAt,
-							expired: new Date() >= new Date( expiresAt ),
-							notifyBefore: {
-								value: parsedTime.value,
-								label: parsedTime.label,
-								short: reminderFirstNotify,
-							},
+					baseTemplate.reminder = {
+						renderDate: getDate(),
+						renderTime: getTime(),
+						expiresAt: expiresAt,
+						expired: new Date() >= new Date( expiresAt ),
+						notifyBefore: {
+							value: parsedTime.value,
+							label: parsedTime.label,
+							short: firstNotifyTime,
 						},
 					}
+					return baseTemplate
 				}
 				default:
 					break
@@ -105,24 +96,24 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 		}
 
 		if ( editDetails ) {
-			const editResult = createTaskTypeDetails( taskTypeValue, editDetails )
+			const editResult = createTaskTypeDetails( taskType, editDetails )
 			return onEdit( editResult )
 		}
 
-		return onSave( createTaskTypeDetails( taskTypeValue ) )
+		return onSave( createTaskTypeDetails( taskType ) )
 	}
 
-	const handleSetTitleValue = e => setTitleValue( e.target.value )
+	const handleSetName = e => setName( e.target.value )
 
-	const handleSetDescriptionValue = e => setDescriptionValue( e.target.value )
+	const handleSetDescription = e => setDescription( e.target.value )
 
 	const handleDateChange = date => setSelectedDate( date )
 
 	const handleTimeChange = time => setSelectedTime( time )
 
-	const handleSetTaskType = e => setTaskTypeValue( e.target.value )
+	const handleSetTaskType = e => setTaskType( e.target.value )
 
-	const handleSetReminderFirstNotify = e => setReminderFirstNotify( e.target.value )
+	const handleSetReminderFirstNotify = e => setFirstNotifyTime( e.target.value )
 
 	const dialogActions = [
 		<Button key='cancel' onClick={onClose}>
@@ -139,24 +130,24 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 				Task Details
 			</Typography>
 			<TextField
-				name='title'
+				name='name'
 				variant='outlined'
-				label='Task Title'
+				label='Task Name'
 				placeholder='eg: Run five blocks'
-				value={titleValue}
-				onChange={handleSetTitleValue}
+				value={name}
+				onChange={handleSetName}
 			/>
 			<TextField
 				name='description'
 				variant='outlined'
 				label='Task Description (optional)'
 				placeholder='eg: Daily exercise routine'
-				value={descriptionValue}
-				onChange={handleSetDescriptionValue}
+				value={description}
+				onChange={handleSetDescription}
 			/>
 			<TextField
 				select
-				value={taskTypeValue}
+				value={taskType}
 				onChange={handleSetTaskType}
 				variant='outlined'
 				label='Task Type'
@@ -164,7 +155,7 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 				<MenuItem value={taskTypes.REGULAR}>Regular</MenuItem>
 				<MenuItem value={taskTypes.REMINDER}>Reminder</MenuItem>
 			</TextField>
-			<EffectBox open={taskTypeValue === taskTypes.REMINDER} effect='collapse' unmountOnExit>
+			<EffectBox open={taskType === taskTypes.REMINDER} effect='collapse' unmountOnExit>
 				<React.Fragment>
 					<Divider style={{ marginTop: '16px', marginBottom: '16px' }} />
 					<Typography variant='h6' component='h4' color='textSecondary' gutterBottom>
@@ -180,19 +171,19 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 					</Grid>
 					<TextField
 						select
-						value={reminderFirstNotify}
+						value={firstNotifyTime}
 						onChange={handleSetReminderFirstNotify}
 						variant='outlined'
 						label='Show Notification'>
-						<MenuItem value={times.t0s}>When due</MenuItem>
-						<MenuItem value={times.t10m}>10 minutes before</MenuItem>
-						<MenuItem value={times.t20m}>20 minutes before</MenuItem>
-						<MenuItem value={times.t30m}>30 minutes before</MenuItem>
-						<MenuItem value={times.t40m}>40 minutes before</MenuItem>
-						<MenuItem value={times.t50m}>50 minutes before</MenuItem>
-						<MenuItem value={times.t1h}>1 hour before</MenuItem>
-						<MenuItem value={times.t2h}>2 hours before</MenuItem>
-						<MenuItem value={times.t3h}>3 hours before</MenuItem>
+						<MenuItem value={durations.t0s}>When due</MenuItem>
+						<MenuItem value={durations.t10m}>10 minutes before</MenuItem>
+						<MenuItem value={durations.t20m}>20 minutes before</MenuItem>
+						<MenuItem value={durations.t30m}>30 minutes before</MenuItem>
+						<MenuItem value={durations.t40m}>40 minutes before</MenuItem>
+						<MenuItem value={durations.t50m}>50 minutes before</MenuItem>
+						<MenuItem value={durations.t1h}>1 hour before</MenuItem>
+						<MenuItem value={durations.t2h}>2 hours before</MenuItem>
+						<MenuItem value={durations.t3h}>3 hours before</MenuItem>
 					</TextField>
 				</React.Fragment>
 			</EffectBox>

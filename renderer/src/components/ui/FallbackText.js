@@ -3,10 +3,10 @@ import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 import PropTypes from 'prop-types'
 
-const FallbackText = ({ text }) => {
+const FallbackText = ( { text } ) => {
 	return (
 		<Box width='100%' textAlign='center'>
-			<Typography variant='h5' color='textSecondary'>
+			<Typography variant='h6' color='textSecondary' component='span'>
 				{text || 'Fallback Text...'}
 			</Typography>
 		</Box>

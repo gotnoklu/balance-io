@@ -1,29 +1,35 @@
-import AppBar from './AppBar'
-import Dialog from './Dialog'
-import TaskView from './TaskView'
-import AddButton from './AddButton'
-import TaskDialog from './TaskDialog'
-import DeleteDialog from './DeleteDialog'
-import DeleteBar from './DeleteBar'
-import TaskCard from './TaskCard'
-import TextField from './TextField'
-import Drawer from './Drawer'
-import EffectBox from './EffectBox'
-import DatePicker from './DatePicker'
-import TimePicker from './TimePicker'
+import AppBar from './ui/AppBar'
+import Dialog from './ui/Dialog'
+import TaskBoard from './ui/TaskBoard'
+import TaskPanel from './ui/TaskPanel'
+import AddButton from './ui/AddButton'
+import TaskDialog from './ui/TaskDialog'
+import DeleteDialog from './ui/DeleteDialog'
+import DeleteBar from './ui/DeleteBar'
+import TaskCard from './ui/TaskCard'
+import TextField from './ui/TextField'
+import BoardDrawer from './ui/BoardDrawer'
+import EffectBox from './ui/EffectBox'
+import DatePicker from './ui/DatePicker'
+import TimePicker from './ui/TimePicker'
+import CustomCssBaseline from './ui/CustomCssBaseline'
+import FallbackText from './ui/FallbackText'
 
 export {
 	AppBar,
 	Dialog,
-	TaskView,
+	TaskBoard,
+	TaskPanel,
 	AddButton,
 	TaskDialog,
 	DeleteBar,
 	DeleteDialog,
 	TaskCard,
 	TextField,
-	Drawer,
+	BoardDrawer,
 	EffectBox,
 	DatePicker,
 	TimePicker,
+	CustomCssBaseline,
+	FallbackText,
 }

@@ -7,13 +7,13 @@ import MuiDialogActions from '@material-ui/core/DialogActions'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles( theme => ( {
 	dialogPaper: {
 		backgroundColor: theme.palette.primary.main,
 	},
-}))
+} ) )
 
-const Dialog = ({ open, onClose, title, actions, children }) => {
+const Dialog = ( { open, onClose, title, actions, children } ) => {
 	const classes = useStyles()
 
 	return (
@@ -26,7 +26,7 @@ const Dialog = ({ open, onClose, title, actions, children }) => {
 				</span>
 			</MuiDialogTitle>
 			<MuiDialogContent>{children}</MuiDialogContent>
-			<MuiDialogActions>{actions.map((action) => action)}</MuiDialogActions>
+			<MuiDialogActions>{actions.map( action => action )}</MuiDialogActions>
 		</MuiDialog>
 	)
 }
