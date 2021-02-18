@@ -9,7 +9,7 @@ const darkColor = {
 	900: '#121212',
 }
 
-export default createMuiTheme({
+export default createMuiTheme( {
 	...coreTheme,
 	palette: {
 		primary: {
@@ -40,7 +40,34 @@ export default createMuiTheme({
 		},
 		MuiMenu: {
 			paper: {
+				backgroundColor: darkColor[500],
+			},
+		},
+		MuiMenuItem: {
+			root: {
+				'&:hover': {
+					backgroundColor: darkColor[700],
+				},
+			},
+		},
+		MuiDrawer: {
+			paper: {
 				backgroundColor: darkColor[700],
+			},
+		},
+		MuiPaper: {
+			outlined: {
+				borderColor: darkColor[500],
+			},
+		},
+		MuiCard: {
+			root: {
+				borderColor: darkColor[500],
+			},
+		},
+		MuiDivider: {
+			root: {
+				backgroundColor: darkColor[500],
 			},
 		},
 		MuiTextField: {
@@ -118,4 +145,4 @@ export default createMuiTheme({
 			},
 		},
 	},
-})
+} )

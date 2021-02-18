@@ -8,7 +8,7 @@ const lightColor = {
 	700: '#dfdfdf',
 }
 
-export default createMuiTheme({
+export default createMuiTheme( {
 	...coreTheme,
 	palette: {
 		primary: {
@@ -47,6 +47,11 @@ export default createMuiTheme({
 						borderColor: blue[500],
 					},
 				},
+			},
+		},
+		MuiDrawer: {
+			paper: {
+				backgroundColor: '#fff',
 			},
 		},
 		MuiPickersModal: {
@@ -106,4 +111,4 @@ export default createMuiTheme({
 			},
 		},
 	},
-})
+} )
