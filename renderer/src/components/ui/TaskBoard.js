@@ -16,8 +16,8 @@ const useStyles = makeStyles( {
 
 const TaskBoard = ( { id } ) => {
 	const classes = useStyles()
-	const boardPanels = useSelector( getPanelsByBoard( id ) )
 	const theme = useTheme()
+	const boardPanels = useSelector( getPanelsByBoard( id ) )
 	const matchesMdDown = useMediaQuery( theme.breakpoints.down( 'md' ) )
 
 	return (
