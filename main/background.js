@@ -22,7 +22,7 @@ const storage = new AppStore( {
 			backup_type: 'MANUAL',
 			auto_backup_delay: null,
 			settings: {
-				options: ['APP_SETTINGS', 'BOARD_SETTINGS'],
+				options: ['SETTINGS', 'APP_SETTINGS', 'BOARD_SETTINGS'],
 			},
 		},
 		iris: {
