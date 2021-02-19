@@ -10,11 +10,11 @@ const TaskBoardView = () => {
 	const currentBoard = boards.find( ( { id } ) => id === current_board )
 
 	return (
-		<Box width='100%' height='100%'>
+		<Box width='100%' height='100%' component='div'>
 			{currentBoard ? (
 				<TaskBoard id={currentBoard.id} />
 			) : (
-				<Box display='flex' alignItems='center'>
+				<Box width='100%' height='100%' component='div' display='flex' alignItems='center'>
 					<FallbackText text='No boards available (Go to "Settings/Boards" to add a new board)' />
 				</Box>
 			)}
