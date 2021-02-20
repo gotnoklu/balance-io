@@ -82,6 +82,11 @@ export default createMuiTheme( {
 				},
 			},
 		},
+		MuiOutlinedInput: {
+			notchedOutline: {
+				borderColor: darkColor[300],
+			},
+		},
 		MuiPickersModal: {
 			dialogRoot: {
 				backgroundColor: darkColor[500],
