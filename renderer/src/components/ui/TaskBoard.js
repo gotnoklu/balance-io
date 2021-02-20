@@ -25,7 +25,7 @@ const TaskBoard = ( { id } ) => {
 			width='100%'
 			height='100%'
 			display='flex'
-			justifyContent='center'
+			justifyContent={boardPanels.length <= 2 ? 'center' : 'flex-start'}
 			className={classes.taskBoard}>
 			{Array.isArray( boardPanels ) && boardPanels.length ? (
 				boardPanels.map( panel => (
