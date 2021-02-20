@@ -18,7 +18,14 @@ const defaultAppState = {
 		selected: null,
 		options: [],
 	},
-	_hydrated: false,
+}
+
+const compareStates = ( defaultState, oldState, newState ) => {
+	const isAllStatesEqual = isEqual( oldState, newState )
+	const isNewStateReset = isEqual( newState, defaultState )
+	console.log( { defaultState, oldState, newState } )
+	if ( isAllStatesEqual || isNewStateReset ) return oldState
+	return newState
 }
 
 const appReducer = ( state = defaultAppState, action ) => {
@@ -26,10 +33,8 @@ const appReducer = ( state = defaultAppState, action ) => {
 		case HYDRATE: {
 			let updatedState = {
 				...action.payload.app,
-				_hydrated: true,
 			}
-			if ( isEqual( state, updatedState ) || state._hydrated ) updatedState = state
-			return updatedState
+			return compareStates( defaultAppState, state, updatedState )
 		}
 		case SET_APP_STORE:
 			return createObjectClone( state, action.payload )

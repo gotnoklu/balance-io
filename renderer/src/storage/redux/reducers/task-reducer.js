@@ -11,15 +11,21 @@ import { isEqual } from 'lodash'
 
 const defaultTaskState = {
 	tasks: [],
-	_hydrated: false,
+}
+
+const compareStates = ( defaultState, oldState, newState ) => {
+	const isAllStatesEqual = isEqual( oldState, newState )
+	const isNewStateReset = isEqual( newState, defaultState )
+	console.log( { defaultState, oldState, newState } )
+	if ( isAllStatesEqual || isNewStateReset ) return oldState
+	return newState
 }
 
 const taskReducer = ( state = defaultTaskState, action ) => {
 	switch ( action.type ) {
 		case HYDRATE: {
-			let updatedState = { ...action.payload.tasks, _hydrated: true }
-			if ( isEqual( state, updatedState ) || state._hydrated ) updatedState = state
-			return updatedState
+			let updatedState = { ...action.payload.tasks }
+			return compareStates( defaultTaskState, state, updatedState )
 		}
 		case SET_TASKS_STORE: {
 			return { ...state, tasks: [...action.payload] }
