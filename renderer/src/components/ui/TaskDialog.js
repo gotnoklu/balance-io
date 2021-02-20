@@ -73,9 +73,10 @@ const TaskDialog = ( { open, onClose, title, editDetails, onEdit, onSave } ) => 
 				case taskTypes.REGULAR:
 					return baseTemplate
 				case taskTypes.REMINDER: {
-					const expiresAt = selectedDate >= selectedTime ? selectedDate : selectedTime
+					const expiresAt = selectedDate
 					const parsedTime = parseTimeStringFormat()( firstNotifyTime )
-					expiresAt.setTime( selectedTime )
+					expiresAt.setHours( selectedTime.getHours() )
+					expiresAt.setMinutes( selectedTime.getMinutes() )
 					expiresAt.setSeconds( 0 )
 					baseTemplate.reminder = {
 						renderDate: getDate(),
