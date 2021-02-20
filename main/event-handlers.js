@@ -19,10 +19,10 @@ const handleRendererProcessEvents = store => {
 
 		if ( storeResponse.success ) return storeResponse
 
-		const readFromBackupResponse = store.readFromBackup()
-		if ( readFromBackupResponse.success ) {
-			store.setStore( readFromBackupResponse.data )
-			return readFromBackupResponse
+		const { success, response } = store.readFromStoreBackup()
+		if ( success ) {
+			store.setStore( response.data )
+			return response
 		} else {
 			try {
 				store.setStore( {} )
@@ -37,19 +37,13 @@ const handleRendererProcessEvents = store => {
 
 	ipcMain.handle( CLEAR_MAIN_APP_STORE, () => store.clear() )
 
-	ipcMain.handle( SAVE_TO_MAIN_APP_STORE, ( event, { key, value } ) => {
-		const setResponse = store.set( key, value )
-		if ( setResponse.success ) {
-			return store.getAll()
-		}
-		return setResponse
-	} )
+	ipcMain.handle( SAVE_TO_MAIN_APP_STORE, ( event, { key, value } ) => store.set( key, value ) )
 
 	ipcMain.handle( GET_FROM_MAIN_APP_STORE, ( event, key ) => store.get( key ) )
 
-	ipcMain.handle( SET_BACKUP_MAIN_APP_STORE, () => store.backup() )
+	ipcMain.handle( SET_BACKUP_MAIN_APP_STORE, () => store.backupStore() )
 
-	ipcMain.handle( GET_BACKUP_MAIN_APP_STORE, () => store.readFromBackup() )
+	ipcMain.handle( GET_BACKUP_MAIN_APP_STORE, () => store.readFromStoreBackup() )
 
 	ipcMain.handle( SHOW_APP_NOTIFICATION, ( event, { title, description, message } ) => {
 		try {
