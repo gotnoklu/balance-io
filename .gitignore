@@ -5,8 +5,10 @@ dist/
 build/
 app/
 
-# white-list
-!main/utilities/
+# tests
+__tests__/
+_tests_/
+tests/
 
 # dependencies
 node_modules/
