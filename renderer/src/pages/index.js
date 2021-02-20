@@ -50,43 +50,51 @@ function SplashPage() {
 	React.useEffect( () => {
 		const initAppStore = async () => {
 			await setLoadingMessage( 'Getting storage...' )
-			const storageResponse = await getMainAppStore()
-			if ( storageResponse.success ) {
+			const getStorage = await getMainAppStore()
+			if ( getStorage.success ) {
 				setLoadingMessage( 'Performing back up...' )
 				const backupResponse = await backupMainAppStore()
 				if ( backupResponse.success ) {
-					const appStore = await getValueOfKey( storageResponse.data, storageKeys.APP )
-					const boardStore = await getValueOfKey( storageResponse.data, storageKeys.BOARDS )
-					const panelStore = await getValueOfKey( storageResponse.data, storageKeys.PANELS )
-					const taskStore = await getValueOfKey( storageResponse.data, storageKeys.TASKS )
+					const appStore = await getValueOfKey( getStorage.response.data, storageKeys.APP )
+					const boardStore = await getValueOfKey( getStorage.response.data, storageKeys.BOARDS )
+					const panelStore = await getValueOfKey( getStorage.response.data, storageKeys.PANELS )
+					const taskStore = await getValueOfKey( getStorage.response.data, storageKeys.TASKS )
 
+					setLoadingMessage( 'Preparing Iris...' )
 					await dispatch( setAppStore( appStore ) )
+					await dispatch( setBoardStore( boardStore ) )
+					await dispatch( setPanelStore( panelStore ) )
 
+					const defaultBoard = new Board( 'DEFAULT_BOARD', 'Default Board', boardTypes.DEFAULT )
 					if ( !boardStore.boards.length ) {
 						setLoadingMessage( 'Creating default board...' )
-						const defaultBoard = new Board( 'DEFAULT_BOARD', 'Default Board', boardTypes.DEFAULT )
-						await saveToMainAppStore( storageKeys.BOARDS, {
-							current_board: boardTypes.DEFAULT,
+						const save = await saveToMainAppStore( storageKeys.BOARDS, {
+							current_board: defaultBoard.id,
 							boards: [defaultBoard],
 						} )
+
+						if ( save.success ) {
+							await dispatch( setBoardStore( getValueOfKey( save.response.data, storageKeys.BOARDS ) ) )
+						}
 					}
 
 					if ( !panelStore.length ) {
 						setLoadingMessage( 'Creating default panels...' )
-						const taskPanel = new Panel( 'TASK_PANEL', 'Tasks', 'DEFAULT_BOARD', true, true )
+						const taskPanel = new Panel( 'TASK_PANEL', 'Tasks', defaultBoard.id, true, true )
 						const completedPanel = new Panel(
 							'COMPLETED_PANEL',
 							'Completed',
-							'DEFAULT_BOARD',
+							defaultBoard.id,
 							false,
 							true
 						)
-						await saveToMainAppStore( storageKeys.PANELS, [taskPanel, completedPanel] )
+						const save = await saveToMainAppStore( storageKeys.PANELS, [taskPanel, completedPanel] )
+
+						if ( save.success ) {
+							await dispatch( setPanelStore( getValueOfKey( save.response.data, storageKeys.PANELS ) ) )
+						}
 					}
 
-					setLoadingMessage( 'Preparing Iris...' )
-					await dispatch( setBoardStore( boardStore ) )
-					await dispatch( setPanelStore( panelStore ) )
 					await dispatch( setTaskStore( taskStore ) )
 					await setIsStoreBackedUp( backupResponse.success )
 					setLoadingMessage( 'Setting things up for you...' )
