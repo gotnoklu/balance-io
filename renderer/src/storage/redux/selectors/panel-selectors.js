@@ -1,6 +1,6 @@
 export const getPanelStore = state => state.panels
 
 export const getPanelsByBoard = board => state => {
-	const panelStore = getPanelStore( state ).panels
-	return panelStore.filter( panel => panel.board === board )
+	const panels = getPanelStore( state ).panels
+	return panels.filter( panel => panel.board === board )
 }
