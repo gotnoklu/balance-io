@@ -1,10 +1,10 @@
 import { screen, BrowserWindow } from 'electron'
-import AppStore from '../storage/app-store'
+import AppStore from '../../storage/app-store'
 
-export const createWindow = (windowName, options) => {
+export const createWindow = ( windowName, options ) => {
 	const key = 'window-state'
 	const storeName = `WindowStore-${windowName}`
-	const store = new AppStore({ storeName })
+	const store = new AppStore( storeName )
 	const defaultWindowSize = {
 		width: options.width,
 		height: options.height,
@@ -18,7 +18,7 @@ export const createWindow = (windowName, options) => {
 	let win
 	let appIsQuiting = false
 
-	const restore = () => store.get(key)
+	const restore = () => store.get( key )
 
 	const getCurrentPosition = () => {
 		const position = win.getPosition()
@@ -31,20 +31,20 @@ export const createWindow = (windowName, options) => {
 		}
 	}
 
-	const saveWindowState = (event) => {
-		if (!win.isMinimized() && !win.isMaximized()) {
-			store.set(key, state)
+	const saveWindowState = event => {
+		if ( !win.isMinimized() && !win.isMaximized() ) {
+			store.set( key, state )
 		}
 	}
 
-	const handleOnMinimize = (event) => {
+	const handleOnMinimize = event => {
 		event.preventDefault()
 		win.hide()
 	}
 
-	const handleOnClose = (event) => {
+	const handleOnClose = event => {
 		saveWindowState()
-		if (!appIsQuiting) {
+		if ( !appIsQuiting ) {
 			event.preventDefault()
 			win.hide()
 			return false
@@ -53,14 +53,14 @@ export const createWindow = (windowName, options) => {
 
 	// ...
 
-	win = new BrowserWindow({
+	win = new BrowserWindow( {
 		...options,
 		...state,
 		webPreferences: {
 			nodeIntegration: true,
 			...options.webPreferences,
 		},
-	})
+	} )
 
 	// win.on('minimize', handleOnMinimize)
 
