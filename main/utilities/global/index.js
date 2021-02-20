@@ -112,9 +112,21 @@ export const setValueOfKey = ( object, keyPath, value ) => {
 	return objectClone
 }
 
-export const createResponse = ( data, success = false, error = false ) => ( { success, data, error } )
+export const createResponse = (
+	response = { message: null, data: null },
+	success = false,
+	error = false
+) => {
+	const defaultResponse = {
+		message: response.message !== undefined ? response.message : null,
+		data: response.data !== undefined ? response.data : null,
+	}
+	return { success, response: defaultResponse, error }
+}
 
-export const createErrorResponse = message => createResponse( message, false, true )
+export const createSuccessResponse = response => createResponse( response, true, false )
+
+export const createErrorResponse = response => createResponse( response, false, true )
 
 export const createNotificationBody = ( title, subtitle, message, icon, urgency, timeoutType ) => ( {
 	title,
