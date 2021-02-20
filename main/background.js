@@ -2,7 +2,7 @@ import { app } from 'electron'
 import serve from 'electron-serve'
 import { createWindow, createTray, createTrayContextMenu } from './utilities/app'
 import path from 'path'
-import AppStore from './utilities/storage/app-store'
+import AppStore from './storage/app-store'
 import handleRendererProcessEvents from './event-handlers'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -14,27 +14,25 @@ if ( isProduction ) {
 }
 
 // Initialize app storage
-const storage = new AppStore( {
-	storeName: 'MainAppStore',
-	defaults: {
-		app: {
-			theme: 'LIGHT',
-			backup_type: 'MANUAL',
-			auto_backup_delay: null,
-			settings: {
-				options: ['SETTINGS', 'APP_SETTINGS', 'BOARD_SETTINGS'],
-			},
-		},
-		iris: {
-			boards: {
-				current_board: null,
-				boards: [],
-			},
-			panels: [],
-			tasks: [],
+const initialStoreData = {
+	app: {
+		theme: 'LIGHT',
+		backup_type: 'MANUAL',
+		auto_backup_delay: null,
+		settings: {
+			options: ['SETTINGS', 'APP_SETTINGS', 'BOARD_SETTINGS'],
 		},
 	},
-} )
+	iris: {
+		boards: {
+			current_board: null,
+			boards: [],
+		},
+		panels: [],
+		tasks: [],
+	},
+}
+const storage = new AppStore( 'MainAppStore', initialStoreData )
 
 let mainWindow, tray
 
@@ -49,8 +47,7 @@ const initializeApp = async () => {
 		icon: path.join( process.resourcesPath, 'favicon.ico' ),
 		webPreferences: {
 			nodeIntegration: true,
-			devTools: true,
-			// preload: path.join(__dirname, 'preload.js'),
+			devTools: isProduction ? false : true,
 		},
 	} )
 
