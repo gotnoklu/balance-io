@@ -110,7 +110,7 @@ const BoardDrawer = ( { open } ) => {
 							</ListItemIcon>
 							<ListItemText
 								primary={
-									<Typography variant='body1' color='secondary'>
+									<Typography variant='h6' color='secondary'>
 										{currentBoard && currentBoard.name}
 									</Typography>
 								}
@@ -122,7 +122,7 @@ const BoardDrawer = ( { open } ) => {
 								<ListItemIcon>
 									<BoardIcon />
 								</ListItemIcon>
-								<ListItemText primary={board.name} />
+								<ListItemText primary={<Typography variant='h6'>{board.name}</Typography>} />
 							</ListItem>
 						) )}
 					</List>
