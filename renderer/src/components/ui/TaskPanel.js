@@ -276,14 +276,16 @@ const TaskPanel = ( { id, name, allowAdd, allowDelete } ) => {
 				top={0}
 				left={0}
 				className={classes.taskPanelTitleBox}>
-				<Box padding={1} display='flex' width='100%' height='100%' zIndex={6}>
+				<Box display='flex' width='100%' height='100%' zIndex={6}>
 					<Box
 						overflow='hidden'
 						width='inherit'
 						display='flex'
 						flexGrow={1}
 						alignItems='center'
-						justifySelf='flex-start'>
+						justifySelf='flex-start'
+						paddingLeft={allowAdd ? 0 : 2}
+						paddingRight={2}>
 						<Box
 							className={clsx( classes.taskPanelTitle, {
 								[classes.taskPanelTitleShift]: deleteBarIsOpen,
@@ -297,7 +299,7 @@ const TaskPanel = ( { id, name, allowAdd, allowDelete } ) => {
 									<AddIcon />
 								</IconButton>
 							)}
-							<Typography variant='h5' component='h3' className={classes.taskPanelTitleText}>
+							<Typography variant='h6' component='h3' className={classes.taskPanelTitleText}>
 								{name}
 							</Typography>
 						</Box>
