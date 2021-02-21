@@ -14,6 +14,7 @@ import { getValueOfKey } from '../utilities/global'
 import TimeChangeListener from '../utilities/listeners/time-change-listener'
 import { Board, Panel } from '../models'
 import { getAppAutoBackupDelay, getAppBackupType } from '../storage/redux/selectors'
+import { createId } from '../utilities/global'
 
 const useStyles = makeStyles( theme => ( {
 	root: {
@@ -49,6 +50,36 @@ function SplashPage() {
 
 	React.useEffect( () => {
 		const initAppStore = async () => {
+			const createDefaultBoardAndPanels = async () => {
+				const defaultBoard = new Board( createId( 20 ), 'Default Board', boardTypes.DEFAULT )
+
+				setLoadingMessage( 'Creating default board...' )
+				const saveDefaultBoard = await saveToMainAppStore( storageKeys.BOARDS, {
+					current_board: defaultBoard.id,
+					boards: [defaultBoard],
+				} )
+
+				if ( saveDefaultBoard.success ) {
+					await dispatch(
+						setBoardStore( getValueOfKey( saveDefaultBoard.response.data, storageKeys.BOARDS ) )
+					)
+				}
+
+				setLoadingMessage( 'Creating default panels...' )
+				const taskPanel = new Panel( createId( 20 ), 'Tasks', defaultBoard.id, true, true )
+				const completedPanel = new Panel( createId( 20 ), 'Completed', defaultBoard.id, false, true )
+				const saveDefaultPanels = await saveToMainAppStore( storageKeys.PANELS, [
+					taskPanel,
+					completedPanel,
+				] )
+
+				if ( saveDefaultPanels.success ) {
+					await dispatch(
+						setPanelStore( getValueOfKey( saveDefaultPanels.response.data, storageKeys.PANELS ) )
+					)
+				}
+			}
+
 			await setLoadingMessage( 'Getting storage...' )
 			const getStorage = await getMainAppStore()
 			if ( getStorage.success ) {
@@ -62,37 +93,12 @@ function SplashPage() {
 
 					setLoadingMessage( 'Preparing Iris...' )
 					await dispatch( setAppStore( appStore ) )
-					await dispatch( setBoardStore( boardStore ) )
-					await dispatch( setPanelStore( panelStore ) )
 
-					const defaultBoard = new Board( 'DEFAULT_BOARD', 'Default Board', boardTypes.DEFAULT )
-					if ( !boardStore.boards.length ) {
-						setLoadingMessage( 'Creating default board...' )
-						const save = await saveToMainAppStore( storageKeys.BOARDS, {
-							current_board: defaultBoard.id,
-							boards: [defaultBoard],
-						} )
-
-						if ( save.success ) {
-							await dispatch( setBoardStore( getValueOfKey( save.response.data, storageKeys.BOARDS ) ) )
-						}
-					}
-
-					if ( !panelStore.length ) {
-						setLoadingMessage( 'Creating default panels...' )
-						const taskPanel = new Panel( 'TASK_PANEL', 'Tasks', defaultBoard.id, true, true )
-						const completedPanel = new Panel(
-							'COMPLETED_PANEL',
-							'Completed',
-							defaultBoard.id,
-							false,
-							true
-						)
-						const save = await saveToMainAppStore( storageKeys.PANELS, [taskPanel, completedPanel] )
-
-						if ( save.success ) {
-							await dispatch( setPanelStore( getValueOfKey( save.response.data, storageKeys.PANELS ) ) )
-						}
+					if ( !boardStore.boards.length && !panelStore.length ) {
+						await createDefaultBoardAndPanels()
+					} else {
+						await dispatch( setBoardStore( boardStore ) )
+						await dispatch( setPanelStore( panelStore ) )
 					}
 
 					await dispatch( setTaskStore( taskStore ) )
