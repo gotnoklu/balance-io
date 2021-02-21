@@ -35,7 +35,7 @@ const useStyles = makeStyles( theme => ( {
 		flexGrow: 1,
 	},
 	paper: {
-	
+		background: 'none',
 		height: '100%',
 		position: 'relative',
 		overflow: 'hidden',

@@ -38,6 +38,7 @@ const useStyles = makeStyles( theme => ( {
 		height: '100%',
 		position: 'relative',
 		overflow: 'hidden',
+		background: 'none',
 	},
 	paperTitleBox: {
 		backgroundColor: theme.palette.primary.dark,
