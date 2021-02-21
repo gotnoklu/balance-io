@@ -35,13 +35,12 @@ const useStyles = makeStyles( theme => ( {
 		flexGrow: 1,
 	},
 	paper: {
-		backgroundColor: theme.palette.primary.main,
 		height: '100%',
 		position: 'relative',
 		overflow: 'hidden',
 	},
 	paperTitleBox: {
-		backgroundColor: theme.palette.primary.main,
+		backgroundColor: theme.palette.primary.dark,
 		zIndex: 2,
 	},
 	iconButton: {
