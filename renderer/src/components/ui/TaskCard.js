@@ -120,11 +120,9 @@ const TaskCard = ( {
 	return (
 		<Card variant='outlined' className={classes.taskCard}>
 			<CardContent className={classes.cardContent} onClick={handleExpand}>
-				<div className={classes.hideRest}>
-					<Typography variant='h5' component='span' noWrap={!expanded} gutterBottom>
-						{name || 'No name'}
-					</Typography>
-				</div>
+				<Typography variant='h5' component='span' gutterBottom>
+					{name || 'No name'}
+				</Typography>
 				<div className={classes.hideRest}>
 					<Typography color='textSecondary' noWrap={!expanded} gutterBottom>
 						{description || 'No description'}
