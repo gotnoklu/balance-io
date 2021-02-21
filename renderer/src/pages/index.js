@@ -15,6 +15,7 @@ import TimeChangeListener from '../utilities/listeners/time-change-listener'
 import { Board, Panel } from '../models'
 import { getAppAutoBackupDelay, getAppBackupType } from '../storage/redux/selectors'
 import { createId } from '../utilities/global'
+import { clearState } from '../storage/persistence'
 
 const useStyles = makeStyles( theme => ( {
 	root: {
@@ -50,6 +51,7 @@ function SplashPage() {
 
 	React.useEffect( () => {
 		const initAppStore = async () => {
+			clearState()
 			const createDefaultBoardAndPanels = async () => {
 				const defaultBoard = new Board( createId( 20 ), 'Default Board', boardTypes.DEFAULT )
 

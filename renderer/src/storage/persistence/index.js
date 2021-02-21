@@ -1,28 +1,36 @@
 const isServer = typeof window === 'undefined'
 
-const saveState = (state) => {
+export const saveState = state => {
 	try {
-		if (!isServer) {
-			const serializedState = JSON.stringify(state)
-			localStorage.setItem('store', serializedState)
+		if ( !isServer ) {
+			const serializedState = JSON.stringify( state )
+			localStorage.setItem( 'store', serializedState )
 		}
-	} catch (error) {
+	} catch ( error ) {
 		return undefined
 	}
 }
 
-const loadState = () => {
+export const loadState = () => {
 	try {
-		if (!isServer) {
-			const serializedState = localStorage.getItem('store')
-			if (serializedState === null) {
+		if ( !isServer ) {
+			const serializedState = localStorage.getItem( 'store' )
+			if ( serializedState === null ) {
 				return undefined
 			}
-			return JSON.parse(serializedState)
+			return JSON.parse( serializedState )
 		}
-	} catch (error) {
+	} catch ( error ) {
 		// Ignore write errors
 	}
 }
 
-export { saveState, loadState }
+export const clearState = () => {
+	try {
+		if ( !isServer ) {
+			localStorage.clear()
+		}
+	} catch ( error ) {
+		// Ignore write errors
+	}
+}
