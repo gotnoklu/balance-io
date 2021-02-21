@@ -22,7 +22,7 @@ import { storageKeys, pageRoutes, boardTypes } from '../../../constants'
 import TextField from '../../../components/ui/TextField'
 import FallbackText from '../../../components/ui/FallbackText'
 import { saveToMainAppStore } from '../../../storage/electron-renderer'
-import { getCurrentBoard, getPanelStore, getBoardStore } from '../../../storage/redux/selectors'
+import { getPanelStore, getBoardStore } from '../../../storage/redux/selectors'
 import { removePanel, setPanelStore, addPanel } from '../../../storage/redux/actions'
 import { useSelector, useDispatch } from 'react-redux'
 import Panel from '../../../models/Panel'
@@ -35,13 +35,13 @@ const useStyles = makeStyles( theme => ( {
 		flexGrow: 1,
 	},
 	paper: {
-		backgroundColor: theme.palette.primary.main,
+	
 		height: '100%',
 		position: 'relative',
 		overflow: 'hidden',
 	},
 	paperTitleBox: {
-		backgroundColor: theme.palette.primary.main,
+		backgroundColor: theme.palette.primary.dark,
 		zIndex: 2,
 	},
 	deleteButton: {
