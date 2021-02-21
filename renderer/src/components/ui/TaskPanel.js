@@ -48,25 +48,25 @@ const useStyles = makeStyles( theme => ( {
 		overflowY: 'auto',
 		paddingBottom: theme.spacing( 1 ),
 	},
-	taskPanelTitleBox: {
+	taskPanelNameBox: {
 		borderRadius: '4px 4px 0px 0px',
 		backgroundColor: theme.palette.primary.dark,
 	},
-	taskPanelTitle: {
+	taskPanelName: {
 		width: '100%',
 		transition: theme.transitions.create( ['width'], {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen,
 		} ),
 	},
-	taskPanelTitleShift: {
+	taskPanelNameShift: {
 		width: '0%',
 		transition: theme.transitions.create( ['width'], {
 			easing: theme.transitions.easing.easeOut,
 			duration: theme.transitions.duration.enteringScreen,
 		} ),
 	},
-	taskPanelTitleText: {
+	taskPanelNameText: {
 		marginLeft: theme.spacing( 1 ),
 	},
 } ) )
@@ -275,7 +275,7 @@ const TaskPanel = ( { id, name, allowAdd, allowDelete } ) => {
 				position='absolute'
 				top={0}
 				left={0}
-				className={classes.taskPanelTitleBox}>
+				className={classes.taskPanelNameBox}>
 				<Box display='flex' width='100%' height='100%' zIndex={6}>
 					<Box
 						overflow='hidden'
@@ -285,13 +285,14 @@ const TaskPanel = ( { id, name, allowAdd, allowDelete } ) => {
 						alignItems='center'
 						justifySelf='flex-start'
 						paddingLeft={allowAdd ? 0 : 2}
-						paddingRight={2}>
+						paddingRight={allowDelete ? 2 : 0}>
 						<Box
-							className={clsx( classes.taskPanelTitle, {
-								[classes.taskPanelTitleShift]: deleteBarIsOpen,
+							className={clsx( classes.taskPanelName, {
+								[classes.taskPanelNameShift]: deleteBarIsOpen,
 							} )}
 							height='inherit'
 							display='flex'
+							flexShrink={0}
 							alignItems='center'
 							overflow='hidden'>
 							{allowAdd && (
@@ -299,7 +300,7 @@ const TaskPanel = ( { id, name, allowAdd, allowDelete } ) => {
 									<AddIcon />
 								</IconButton>
 							)}
-							<Typography variant='h6' component='h3' className={classes.taskPanelTitleText}>
+							<Typography variant='h6' component='h3' className={classes.taskPanelNameText}>
 								{name}
 							</Typography>
 						</Box>
@@ -333,7 +334,7 @@ const TaskPanel = ( { id, name, allowAdd, allowDelete } ) => {
 			{panelTasks.length ? (
 				<React.Fragment>
 					<Box
-						paddingTop={2}
+						paddingTop={1}
 						paddingLeft={1}
 						paddingRight={1}
 						paddingBottom={1}
