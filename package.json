@@ -1,22 +1,22 @@
 {
-	"name": "iris",
-	"version": "0.1.0",
+	"name": "balance-io",
+	"version": "1.0.0",
 	"author": "Enoch Klu <cyronix787@gmail.com>",
 	"main": "app/background.js",
 	"license": "UNLICENSED",
-	"repository": "https://github.com/Elkanah-me/iris",
-	"description": "A task manager.",
+	"repository": "https://github.com/enocheklu/balance-io",
+	"description": "A simple project manager for desktop built with Next JS, React, Material UI, and Electron.",
 	"scripts": {
 		"dev": "nextron",
 		"prod": "next start renderer",
 		"build": "nextron build",
-    "build:linux": "nextron build -l",
-    "build:windows": "nextron build -w",
+		"build:linux": "nextron build --linux",
+		"build:windows": "nextron build --windows",
 		"postinstall": "electron-builder install-app-deps"
 	},
 	"build": {
-		"appId": "app.iris",
-		"productName": "Iris",
+		"appId": "balance.io",
+		"productName": "Balance.io",
 		"copyright": "Copyright 2021 Enoch Klu",
 		"nsis": {
 			"oneClick": false,
@@ -26,7 +26,7 @@
 		},
 		"win": {
 			"icon": "resources/icons/icon.ico",
-			"appId": "app.iris",
+			"appId": "app.balance.io",
 			"publisherName": "Enoch Klu",
 			"target": [
 				{
@@ -35,15 +35,6 @@
 				}
 			]
 		},
-    "linux": {
-      "icon": "resources/icons/icon.png",
-      "appId": "app.iris",
-      "target": ["deb"]
-    },
-    "deb": {
-      "depends": ["libnotify4", "libappindicator1"],
-      "fpm": ["--deb-no-default-config-files"]
-    },
 		"files": [
 			"**/*",
 			"main",
@@ -65,26 +56,26 @@
 		]
 	},
 	"devDependencies": {
-		"@date-io/date-fns": "1.0.0",
+		"@date-io/date-fns": "2.10.11",
 		"@material-ui/core": "^4.11.0",
 		"@material-ui/icons": "^4.9.1",
 		"@material-ui/pickers": "^3.2.10",
 		"clsx": "^1.1.1",
 		"date-fns": "^2.16.1",
-		"electron": "^11.1.1",
+		"electron": "^13.1.6",
 		"electron-builder": "^22.9.1",
 		"eslint": "^7.15.0",
-		"eslint-config-prettier": "^7.0.0",
+		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^3.3.0",
 		"eslint-plugin-react": "^7.21.5",
 		"lodash": "^4.17.20",
-		"next": "^10.0.6",
-		"next-redux-wrapper": "^6.0.2",
-		"nextron": "^6.0.3",
+		"next": "11.0.1",
+		"next-redux-wrapper": "^7.0.2",
+		"nextron": "^7.0.0",
 		"prettier": "^2.2.1",
 		"prop-types": "^15.7.2",
-		"react": "^17.0.1",
-		"react-dom": "^17.0.1",
+		"react": "17.0.2",
+		"react-dom": "17.0.2",
 		"react-redux": "^7.2.2",
 		"redux": "^4.0.5"
 	},
