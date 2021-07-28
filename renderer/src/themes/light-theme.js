@@ -1,40 +1,43 @@
-import { createMuiTheme } from '@material-ui/core/styles'
+import { createTheme } from '@material-ui/core/styles'
 import blue from '@material-ui/core/colors/blue'
+import { mintCream } from './colors'
 import coreTheme from './core-theme'
 
-const lightColor = {
-	300: '#ffffff',
-	500: '#efefef',
-	700: '#dfdfdf',
-}
-
-export default createMuiTheme( {
+export default createTheme( {
 	...coreTheme,
 	palette: {
 		primary: {
-			contrastText: 'rgba(10, 10, 10, 0.8)',
-			light: lightColor[300],
-			main: lightColor[500],
-			dark: lightColor[700],
+			contrastText: mintCream.textPrimary,
+			light: mintCream[200],
+			main: mintCream[400],
+			dark: mintCream[500],
 		},
 		secondary: {
-			contrastText: '#fff',
+			contrastText: mintCream[100],
 			light: blue[300],
 			main: blue[500],
 			dark: blue[700],
 		},
 		text: {
-			primary: 'rgba(10, 10, 10, 0.8)',
-			secondary: 'rgba(50, 50, 50, 0.7)',
+			primary: mintCream.textPrimary,
+			secondary: mintCream.textSecondary,
 		},
 		background: {
-			default: lightColor[300],
+			default: mintCream.background,
 		},
 	},
 	overrides: {
 		MuiAppBar: {
 			root: {
 				boxShadow: 'none',
+			},
+		},
+		MuiIconButton: {
+			colorSecondary: {
+				'&:hover': {
+					transition: 'background-color 0.2s ease-in-out',
+					backgroundColor: mintCream[600],
+				},
 			},
 		},
 		MuiTextField: {
@@ -106,7 +109,7 @@ export default createMuiTheme( {
 		},
 		MuiPickersClockNumber: {
 			clockNumberSelected: {
-				color: '#fff',
+				color: mintCream.textPrimary,
 				backgroundColor: blue[500],
 			},
 		},

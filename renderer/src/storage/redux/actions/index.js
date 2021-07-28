@@ -1,49 +1,40 @@
-import {
-	setAppTheme,
+export {
+	setAppThemeType,
 	setAppBackupType,
 	setAppStore,
 	setAppAutoBackupDelay,
-	setAppSettings,
-	setAppSelectedSetting,
 } from './app-actions'
 
-import {
-	setTaskStore,
+export {
+	setTasksStore,
 	deleteAllTasks,
 	deleteMultipleTasks,
 	deleteTask,
 	saveTask,
-} from './task-actions'
-
-import {
-	setBoardStore,
-	addBoard,
-	removeBoard,
-	removeAllBoards,
-	setCurrentBoard,
-} from './board-actions'
-
-import { setPanelStore, addPanel, removePanel, removeAllPanels } from './panel-actions'
+} from './tasks-actions'
 
 export {
-	setAppTheme,
-	setAppBackupType,
-	setTaskStore,
-	deleteAllTasks,
-	deleteMultipleTasks,
-	deleteTask,
-	saveTask,
-	setAppStore,
-	setAppAutoBackupDelay,
-	setBoardStore,
+	setBoardsStore,
 	addBoard,
-	removeBoard,
-	removeAllBoards,
-	setPanelStore,
+	deleteBoard,
+	deleteAllBoards,
+	deleteMultipleBoards,
+	setCurrentBoardId,
+} from './boards-actions'
+
+export {
+	setProjectsStore,
+	addProject,
+	deleteProject,
+	deleteAllProjects,
+	deleteMultipleProjects,
+	setCurrentProjectId,
+} from './projects-actions'
+
+export {
+	setPanelsStore,
 	addPanel,
-	removePanel,
-	removeAllPanels,
-	setAppSettings,
-	setAppSelectedSetting,
-	setCurrentBoard,
-}
+	deletePanel,
+	deleteAllPanels,
+	deleteMultiplePanels,
+} from './panels-actions'

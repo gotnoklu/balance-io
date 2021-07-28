@@ -1,29 +1,15 @@
-import {
-	getAppStore,
-	getAppTheme,
-	getAppBackupType,
-	getAppAutoBackupDelay,
-	getAppSettings,
-	getAppSelectedSetting,
-	getAppSettingOptions,
-} from './app-selectors'
-import { getTasksStore, getTasksByPanel } from './task-selectors'
-import { getBoardStore, getBoards, getCurrentBoard } from './board-selectors'
-import { getPanelStore, getPanelsByBoard } from './panel-selectors'
-
 export {
 	getAppStore,
-	getAppTheme,
+	getAppThemeType,
 	getAppBackupType,
-	getTasksStore,
 	getAppAutoBackupDelay,
-	getBoardStore,
-	getBoards,
-	getCurrentBoard,
-	getPanelStore,
-	getTasksByPanel,
-	getPanelsByBoard,
-	getAppSettings,
-	getAppSelectedSetting,
-	getAppSettingOptions,
-}
+} from './app-selectors'
+export { getTasksStore, getTasksByPanelId } from './tasks-selectors'
+export {
+	getBoardsStore,
+	getBoardsList,
+	getCurrentBoardId,
+	getBoardsByProjectId,
+} from './boards-selectors'
+export { getProjectsStore, getProjectsList, getCurrentProjectId } from './projects-selectors'
+export { getPanelsStore, getPanelsByBoardId } from './panels-selectors'

@@ -1,75 +1,12 @@
-const crypto = require( 'crypto' )
+import crypto from 'crypto'
 
 export const createCharacterString = length => {
-	const characters = [
-		'a',
-		'b',
-		'c',
-		'd',
-		'e',
-		'f',
-		'g',
-		'h',
-		'i',
-		'j',
-		'k',
-		'l',
-		'm',
-		'n',
-		'o',
-		'p',
-		'q',
-		'r',
-		's',
-		't',
-		'u',
-		'v',
-		'w',
-		'x',
-		'y',
-		'z',
-		'A',
-		'B',
-		'C',
-		'D',
-		'E',
-		'F',
-		'G',
-		'H',
-		'I',
-		'J',
-		'K',
-		'L',
-		'M',
-		'N',
-		'O',
-		'P',
-		'Q',
-		'R',
-		'S',
-		'T',
-		'U',
-		'V',
-		'W',
-		'X',
-		'Y',
-		'Z',
-		'0',
-		'1',
-		'2',
-		'3',
-		'4',
-		'5',
-		'6',
-		'7',
-		'8',
-		'9',
-	]
-	let result = []
+	const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345678'
+	let result = ''
 	while ( result.length < length ) {
-		result.push( characters[Math.floor( characters.length * Math.random() )] )
+		result += characters[Math.floor( characters.length * Math.random() )]
 	}
-	return result.join( '' )
+	return result
 }
 
 export const createId = length => createCharacterString( length )
@@ -85,29 +22,37 @@ export const createObjectClone = ( ...sources ) => Object.assign( {}, ...sources
 export const findIndexFromArray = ( list, predicate ) => list.findIndex( predicate )
 
 export const getValueOfKey = ( object, keyPath ) => {
-	const keys = splitObjectKeys( keyPath )
-	let counter = 0
-	let current = object
-	while ( counter < keys.length ) {
-		current = Object.getOwnPropertyDescriptor( current, keys[counter] ).value
-		counter += 1
+	try {
+		const keys = splitObjectKeys( keyPath )
+		let counter = 0
+		let current = object
+		while ( counter < keys.length ) {
+			current = Object.getOwnPropertyDescriptor( current, keys[counter] ).value
+			counter += 1
+		}
+		return current
+	} catch ( error ) {
+		console.log( error )
 	}
-	return current
 }
 
 export const splitObjectKeys = ( keyString, delimiter = '.' ) => keyString.split( delimiter )
 
 export const setValueOfKey = ( object, keyPath, value ) => {
-	const objectClone = createObjectClone( object )
-	const keys = splitObjectKeys( keyPath )
-	let counter = 0
-	let current = objectClone
-	while ( counter < keys.length - 1 ) {
-		current = Object.getOwnPropertyDescriptor( current, keys[counter] ).value
-		counter += 1
+	try {
+		const objectClone = createObjectClone( object )
+		const keys = splitObjectKeys( keyPath )
+		let counter = 0
+		let current = objectClone
+		while ( counter < keys.length - 1 ) {
+			current = Object.getOwnPropertyDescriptor( current, keys[counter] ).value
+			counter += 1
+		}
+		current[keys[keys.length - 1]] = value
+		return objectClone
+	} catch ( error ) {
+		console.log( error )
 	}
-	current[keys[keys.length - 1]] = value
-	return objectClone
 }
 
 export const createResponse = ( data, success = false, error = false ) => ( { success, data, error } )

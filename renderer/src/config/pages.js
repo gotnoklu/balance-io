@@ -1,4 +1,4 @@
-import { pageRoutes } from '../constants'
+import { pageRoutes } from '../constants/app'
 
 export const pageConfig = {
 	INDEX: {
@@ -13,21 +13,9 @@ export const pageConfig = {
 		header: true,
 		drawer: true,
 	},
-	SETTINGS: {
-		header: true,
-		drawer: false,
-	},
-	APP_SETTINGS: {
-		header: true,
-		drawer: false,
-	},
-	BOARDS: {
-		header: true,
-		drawer: false,
-	},
-	BOARD_SETTINGS: {
-		header: true,
-		drawer: false,
+	NO_PROJECTS: {
+		header: false,
+		drawer: true,
 	},
 }
 
@@ -35,8 +23,5 @@ export const pageConfigByRoute = {
 	[pageRoutes.INDEX]: pageConfig.INDEX,
 	[pageRoutes.ERROR]: pageConfig.ERROR,
 	[pageRoutes.HOME]: pageConfig.HOME,
-	[pageRoutes.SETTINGS]: pageConfig.SETTINGS,
-	[pageRoutes.APP_SETTINGS]: pageConfig.APP_SETTINGS,
-	[pageRoutes.BOARDS]: pageConfig.BOARDS,
-	[pageRoutes.BOARD_SETTINGS]: pageConfig.BOARD_SETTINGS,
+	[pageRoutes.NO_PROJECTS]: pageConfig.NO_PROJECTS,
 }

@@ -1,21 +1,14 @@
-import { createReduxAction } from './creators'
-import {
-	SET_APP_THEME,
-	SET_APP_BACKUP_TYPE,
-	SET_APP_STORE,
-	SET_APP_AUTO_BACKUP_DELAY,
-	SET_APP_SETTINGS,
-	SET_APP_SELECTED_SETTING,
-} from './types.js'
+import { createReduxAction } from '../../../utilities/storage/redux'
+import { appReducerActions } from '../../../constants/storage'
+
+const { SET_APP_THEME_TYPE, SET_APP_BACKUP_TYPE, SET_APP_STORE, SET_APP_AUTO_BACKUP_DELAY } =
+	appReducerActions
 
 export const setAppStore = store => createReduxAction( SET_APP_STORE, store )
 
-export const setAppTheme = theme => createReduxAction( SET_APP_THEME, theme )
+export const setAppThemeType = themeType => createReduxAction( SET_APP_THEME_TYPE, themeType )
 
-export const setAppBackupType = type => createReduxAction( SET_APP_BACKUP_TYPE, type )
+export const setAppBackupType = backupType => createReduxAction( SET_APP_BACKUP_TYPE, backupType )
 
-export const setAppAutoBackupDelay = delay => createReduxAction( SET_APP_AUTO_BACKUP_DELAY, delay )
-
-export const setAppSettings = settings => createReduxAction( SET_APP_SETTINGS, settings )
-
-export const setAppSelectedSetting = setting => createReduxAction( SET_APP_SELECTED_SETTING, setting )
+export const setAppAutoBackupDelay = autoBackupDelay =>
+	createReduxAction( SET_APP_AUTO_BACKUP_DELAY, autoBackupDelay )

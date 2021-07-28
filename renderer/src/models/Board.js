@@ -1,8 +1,8 @@
 class Board {
-	constructor( id = null, name = '', type ) {
+	constructor( id = null, name = '', projectId ) {
 		this.id = id.startsWith( 'board-' ) ? id : `board-${id}`
 		this.name = name
-		this.type = type
+		this.project_id = projectId
 	}
 }
 

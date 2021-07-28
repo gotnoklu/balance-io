@@ -1,9 +1,18 @@
-# Iris Change Log
+# Balance.io Change Log
+
+## v1.0.0
+- Create and manage projects, boards, and panels.
+- Create custom panels for tasks.
+- Custom title bar for frameless window.
+- User interface improvements.
+- Remove obsolete code.
+- Fix bugs.
 
 ## v0.1.0
-- Create backup feature.
+- Create local backup feature.
 - Create notification feature for reminders.
 - Allow app to run in system tray.
+- Add build for Windows, and Linux.
 -----
 - Create task types:
 > - Regular.

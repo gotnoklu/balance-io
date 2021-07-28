@@ -1,23 +1,16 @@
 import { createObjectClone } from '../../../utilities/global'
-import {
-	SET_APP_THEME,
-	SET_APP_BACKUP_TYPE,
-	SET_APP_STORE,
-	SET_APP_AUTO_BACKUP_DELAY,
-	SET_APP_SETTINGS,
-	SET_APP_SELECTED_SETTING,
-} from '../actions/types'
+import { appReducerActions } from '../../../constants/storage'
+import { themeTypes, backupTypes } from '../../../constants/app'
 import { HYDRATE } from 'next-redux-wrapper'
 import { isEqual } from 'lodash'
 
-const defaultAppState = {
-	theme: null,
-	backup_type: null,
+const { SET_APP_THEME_TYPE, SET_APP_BACKUP_TYPE, SET_APP_STORE, SET_APP_AUTO_BACKUP_DELAY } =
+	appReducerActions
+
+const defaultAppStore = {
+	theme_type: themeTypes.LIGHT,
+	backup_type: backupTypes.MANUAL,
 	auto_backup_delay: null,
-	settings: {
-		selected: null,
-		options: [],
-	},
 }
 
 const compareStates = ( defaultState, oldState, newState ) => {
@@ -28,18 +21,18 @@ const compareStates = ( defaultState, oldState, newState ) => {
 	return newState
 }
 
-const appReducer = ( state = defaultAppState, action ) => {
+const appReducer = ( state = defaultAppStore, action ) => {
 	switch ( action.type ) {
 		case HYDRATE: {
 			let updatedState = {
 				...action.payload.app,
 			}
-			return compareStates( defaultAppState, state, updatedState )
+			return compareStates( defaultAppStore, state, updatedState )
 		}
 		case SET_APP_STORE:
 			return createObjectClone( state, action.payload )
-		case SET_APP_THEME:
-			return createObjectClone( state, { theme: action.payload } )
+		case SET_APP_THEME_TYPE:
+			return createObjectClone( state, { theme_type: action.payload } )
 		case SET_APP_BACKUP_TYPE:
 			return createObjectClone( state, {
 				backup_type: action.payload,
@@ -47,14 +40,6 @@ const appReducer = ( state = defaultAppState, action ) => {
 		case SET_APP_AUTO_BACKUP_DELAY:
 			return createObjectClone( state, {
 				auto_backup_delay: action.payload,
-			} )
-		case SET_APP_SETTINGS:
-			return createObjectClone( state, {
-				settings: action.payload,
-			} )
-		case SET_APP_SELECTED_SETTING:
-			return createObjectClone( state, {
-				settings: { selected: action.payload, options: state.settings.options },
 			} )
 		default:
 			return createObjectClone( state )

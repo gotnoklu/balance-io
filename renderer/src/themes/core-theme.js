@@ -1,9 +1,9 @@
-import { createMuiTheme } from '@material-ui/core/styles'
+import { createTheme } from '@material-ui/core/styles'
 
-export default createMuiTheme( {
+export default createTheme( {
 	typography: {
 		fontFamily: [
-			'RobotoMono',
+			'Lexend Deca',
 			'Barlow',
 			'Overpass',
 			'Roboto',
@@ -12,27 +12,27 @@ export default createMuiTheme( {
 			'sans-serif',
 		].join( ',' ),
 		h1: {
-			fontFamily: 'RobotoMono-Bold',
+			fontFamily: 'Lexend Deca',
 			fontSize: '2.625rem',
 		},
 		h2: {
-			fontFamily: 'RobotoMono-Bold',
+			fontFamily: 'Lexend Deca',
 			fontSize: '2.0625rem',
 		},
 		h3: {
-			fontFamily: 'RobotoMono-Bold',
+			fontFamily: 'Lexend Deca',
 			fontSize: '1.625rem',
 		},
 		h4: {
-			fontFamily: 'RobotoMono-Bold',
+			fontFamily: 'Lexend Deca',
 			fontSize: '1.25rem',
 		},
 		h5: {
-			fontFamily: 'RobotoMono-Bold',
+			fontFamily: 'Lexend Deca',
 			fontSize: '1rem',
 		},
 		h6: {
-			fontFamily: 'RobotoMono-Bold',
+			fontFamily: 'Lexend Deca',
 			fontSize: '0.8125rem',
 		},
 		body1: {
@@ -52,7 +52,7 @@ export default createMuiTheme( {
 			fontFamily: 'Barlow',
 		},
 		button: {
-			fontFamily: 'RobotoMono-Bold',
+			fontFamily: 'Lexend Deca',
 			textTransform: 'none',
 		},
 	},

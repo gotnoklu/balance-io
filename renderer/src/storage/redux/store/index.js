@@ -1,18 +1,21 @@
 import { createStore } from 'redux'
 import { createWrapper } from 'next-redux-wrapper'
 import rootReducer from '../reducers'
-import { saveState, loadState } from '../../persistence'
+import { saveState, loadState } from '../../../libraries/store-persistence'
 import throttle from 'lodash/throttle'
+import { persistenceKeys } from '../../../constants/storage'
 
-const persistedState = loadState()
-const store = createStore(rootReducer, persistedState)
+const { ROOT } = persistenceKeys
+
+const persistedState = loadState( ROOT )
+const store = createStore( rootReducer, persistedState )
 
 store.subscribe(
-	throttle(() => {
-		saveState(store.getState())
-	}, 1000)
+	throttle( () => {
+		saveState( ROOT, store.getState() )
+	}, 1000 )
 )
 
-const storeWrapper = createWrapper(() => store)
+const storeWrapper = createWrapper( () => store )
 
 export default storeWrapper

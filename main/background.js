@@ -1,11 +1,12 @@
 import { app } from 'electron'
 import serve from 'electron-serve'
-import { createWindow, createTray, createTrayContextMenu } from './utilities/app'
+import { createWindow, createTray, createTrayContextMenu } from './src/utilities/app'
 import path from 'path'
-import AppStore from './storage/app-store'
-import handleRendererProcessEvents from './event-handlers'
-
-const isProduction = process.env.NODE_ENV === 'production'
+import AppStore from './src/libraries/app-store'
+import handleWindowEvents from './src/events/window'
+import handleStorageEvents from './src/events/storage'
+import handleNotificationEvents from './src/events/notifications'
+import { isProduction, defaultStorageData } from './src/constants/app'
 
 if ( isProduction ) {
 	serve( { directory: 'app' } )
@@ -13,43 +14,28 @@ if ( isProduction ) {
 	app.setPath( 'userData', `${app.getPath( 'userData' )} (development)` )
 }
 
-// Initialize app storage
-const initialStoreData = {
-	app: {
-		theme: 'LIGHT',
-		backup_type: 'MANUAL',
-		auto_backup_delay: null,
-		settings: {
-			options: ['SETTINGS', 'APP_SETTINGS', 'BOARD_SETTINGS'],
-		},
-	},
-	iris: {
-		boards: {
-			current_board: null,
-			boards: [],
-		},
-		panels: [],
-		tasks: [],
-	},
-}
-const storage = new AppStore( 'MainAppStore', initialStoreData )
+const store = new AppStore( 'Store', defaultStorageData )
 
 let mainWindow, tray
 
 const initializeApp = async () => {
 	await app.whenReady()
 
-	mainWindow = createWindow( 'main', {
+	mainWindow = await createWindow( {
 		width: 900,
 		height: 700,
 		minWidth: 700,
-		title: 'Iris',
+		title: 'Balance.io',
 		icon: path.join( process.resourcesPath, 'favicon.ico' ),
+		frame: false,
 		webPreferences: {
 			nodeIntegration: true,
 			devTools: isProduction ? false : true,
+			contextIsolation: false,
 		},
 	} )
+
+	handleWindowEvents( mainWindow )
 
 	mainWindow.on( 'close', event => {
 		if ( !app.isQuitting ) {
@@ -60,17 +46,17 @@ const initializeApp = async () => {
 	} )
 
 	tray = createTray( 'tray.png' )
-	tray.setToolTip( 'Iris' )
+	tray.setToolTip( 'Balance.io' )
 	createTrayContextMenu( tray, [
 		{
-			label: 'Open Iris',
-			click() {
+			label: 'Open Balance.io',
+			click: () => {
 				mainWindow.show()
 			},
 		},
 		{
 			label: 'Exit',
-			click() {
+			click: () => {
 				app.isQuitting = true
 				app.quit()
 			},
@@ -91,13 +77,14 @@ const initializeApp = async () => {
 	}
 
 	// Set appUserModelId
-	app.setAppUserModelId( 'Iris' )
+	app.setAppUserModelId( 'Balance.io' )
 }
 
 // Initialize app
+
 initializeApp().catch( error => {
 	console.log( error )
 } )
 
-// Handle all events from renderer process
-handleRendererProcessEvents( storage )
+handleStorageEvents( store )
+handleNotificationEvents()

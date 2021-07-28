@@ -8,8 +8,8 @@ class Task {
 	 * @param {Boolean} completed Completed status of task
 	 * @param {Boolean | Object} reminder Reminder status of task
 	 */
-	constructor( panel = null, id = null, name = '', description = '', reminder = false ) {
-		this.panel = panel
+	constructor( panelId = null, id = null, name = '', description = '', reminder = false ) {
+		this.panel_id = panelId
 		this.id = id.startsWith( 'task-' ) ? id : `task-${id}`
 		this.name = name
 		this.description = description

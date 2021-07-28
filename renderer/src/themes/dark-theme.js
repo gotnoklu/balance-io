@@ -1,35 +1,29 @@
-import { createMuiTheme } from '@material-ui/core/styles'
+import { createTheme } from '@material-ui/core/styles'
 import lightGreen from '@material-ui/core/colors/lightGreen'
+import { charcoal, mintCream } from './colors'
 import coreTheme from './core-theme'
 
-const darkColor = {
-	300: '#666666',
-	500: '#444444',
-	700: '#222222',
-	900: '#121212',
-}
-
-export default createMuiTheme( {
+export default createTheme( {
 	...coreTheme,
 	palette: {
 		primary: {
-			contrastText: '#fff',
-			light: darkColor[300],
-			main: darkColor[500],
-			dark: darkColor[700],
+			contrastText: charcoal.textPrimary,
+			light: charcoal[300],
+			main: charcoal[500],
+			dark: charcoal[700],
 		},
 		secondary: {
-			contrastText: '#222222',
+			contrastText: charcoal.textPrimary,
 			light: lightGreen[300],
 			main: lightGreen[500],
 			dark: lightGreen[700],
 		},
 		text: {
-			primary: '#fefefe',
-			secondary: '#bbbbbb',
+			primary: charcoal.textPrimary,
+			secondary: charcoal.textSecondary,
 		},
 		background: {
-			default: darkColor[900],
+			default: charcoal.background,
 		},
 	},
 	overrides: {
@@ -38,36 +32,49 @@ export default createMuiTheme( {
 				boxShadow: 'none',
 			},
 		},
+		MuiIcon: {
+			colorAction: {
+				color: mintCream[500],
+			},
+		},
+		MuiIconButton: {
+			colorSecondary: {
+				'&:hover': {
+					transition: 'background-color 0.2s ease-in-out',
+					backgroundColor: charcoal[400],
+				},
+			},
+		},
 		MuiMenu: {
 			paper: {
-				backgroundColor: darkColor[500],
+				backgroundColor: charcoal[500],
 			},
 		},
 		MuiMenuItem: {
 			root: {
 				'&:hover': {
-					backgroundColor: darkColor[700],
+					backgroundColor: charcoal[700],
 				},
 			},
 		},
 		MuiDrawer: {
 			paper: {
-				backgroundColor: darkColor[700],
+				backgroundColor: charcoal[700],
 			},
 		},
 		MuiPaper: {
 			outlined: {
-				borderColor: darkColor[500],
+				borderColor: charcoal[500],
 			},
 		},
 		MuiCard: {
 			root: {
-				borderColor: darkColor[500],
+				borderColor: charcoal[500],
 			},
 		},
 		MuiDivider: {
 			root: {
-				backgroundColor: darkColor[500],
+				backgroundColor: charcoal[500],
 			},
 		},
 		MuiTextField: {
@@ -84,17 +91,17 @@ export default createMuiTheme( {
 		},
 		MuiOutlinedInput: {
 			notchedOutline: {
-				borderColor: darkColor[300],
+				borderColor: charcoal[300],
 			},
 		},
 		MuiPickersModal: {
 			dialogRoot: {
-				backgroundColor: darkColor[500],
+				backgroundColor: charcoal[500],
 				'& .MuiDialogActions-root': {
 					'& button.MuiButton-text': {
 						color: lightGreen[500],
 						'&:hover': {
-							backgroundColor: darkColor[900],
+							backgroundColor: charcoal[900],
 						},
 					},
 				},
@@ -102,32 +109,32 @@ export default createMuiTheme( {
 		},
 		MuiPickersToolbar: {
 			toolbar: {
-				backgroundColor: darkColor[700],
+				backgroundColor: charcoal[700],
 			},
 		},
 		MuiPickersToolbarText: {
 			toolbarTxt: {
-				color: darkColor[300],
+				color: charcoal[300],
 			},
 			toolbarBtnSelected: {
-				color: '#fff',
+				color: charcoal.textPrimary,
 			},
 		},
 		MuiPickersCalendarHeader: {
 			iconButton: {
-				backgroundColor: darkColor[500],
+				backgroundColor: charcoal[500],
 			},
 		},
 		MuiPickersDay: {
 			daySelected: {
-				color: '#fff',
+				color: charcoal.textPrimary,
 				backgroundColor: lightGreen[500],
 			},
 		},
 		MuiPickersYear: {
 			yearSelected: {
-				color: '#fff',
-				backgroundColor: darkColor[500],
+				color: charcoal.textPrimary,
+				backgroundColor: charcoal[500],
 			},
 		},
 		MuiPickersClock: {
@@ -145,7 +152,7 @@ export default createMuiTheme( {
 		},
 		MuiPickersClockNumber: {
 			clockNumberSelected: {
-				color: '#fff',
+				color: charcoal.textPrimary,
 				backgroundColor: lightGreen[500],
 			},
 		},
