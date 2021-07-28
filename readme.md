@@ -1,3 +1,3 @@
-# Iris
+# Balance.io
 
-A task manager for Windows.
+A simple project manager for desktop built with Next JS, React, Material UI, and Electron.
