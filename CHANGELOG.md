@@ -6,6 +6,7 @@
 - Custom title bar for frameless window.
 - User interface improvements.
 - Remove obsolete code.
+- Change app name.
 - Fix bugs.
 
 ## v0.1.0
